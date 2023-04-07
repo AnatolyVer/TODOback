@@ -37,7 +37,7 @@ const todos = [
     ]
 
 class todoController{
-    async get_all (req, res){
+    async getAllTodo(req, res){
         try {
             console.log("sending data...")
            res.json(todos)
@@ -47,7 +47,18 @@ class todoController{
         }
     }
 
-    async create (req, res){
+    async getAllTodoByUserID(req, res) {
+        try {
+            const user_id = req.params.user_id;
+            const docs = await todo.find({ user_id });
+            res.json(docs);
+        } catch (e) {
+            console.log(e);
+            res.status(500).end();
+        }
+    }
+
+    async createTodo(req, res){
         const todo_to_create = req.body
         try {
             await todo.create(todo_to_create)
