@@ -1,6 +1,8 @@
+import todo from "../models/Todo.js";
 
 const todos = [
     {
+        user_id:"1234",
     label:"Test label",
     id:"1",
     description:"Description 1",
@@ -43,6 +45,19 @@ class todoController{
         }catch (e){
             console.log(e)
         }
+    }
+
+    async create (req, res){
+        const todo_to_create = req.body
+        try {
+            await todo.create(todo_to_create)
+            res.status(200).end()
+            console.log("Todo created")
+        }catch (e){
+            res.status(500).end()
+            console.log("Error")
+        }
+        return res
     }
 }
 const TodoController = new todoController()
