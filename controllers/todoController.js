@@ -51,6 +51,7 @@ class todoController{
         try {
             const user_id = req.params.user_id;
             const docs = await todo.find({ user_id });
+            docs.sort((a, b) => a.priority.localeCompare(b.priority));
             res.json(docs);
         } catch (e) {
             console.log(e);
