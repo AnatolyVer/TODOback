@@ -47,15 +47,29 @@ class todoController{
         }
     }
 
+    async deleteTodo(req, res){
+        try {
+            const id = req.params.id;
+            const found = await todo.findOneAndDelete({id})
+            if (!found) {
+                return res.status(404).send('Запись не найдена')
+            }
+            return res.status(200).send('Запись успешно удалена')
+        } catch (e) {
+            console.error(e)
+            return res.status(500).end()
+        }
+    }
+
     async getAllTodoByUserID(req, res) {
         try {
             const user_id = req.params.user_id;
             const docs = await todo.find({ user_id });
             docs.sort((a, b) => a.priority.localeCompare(b.priority));
-            res.json(docs);
+            return res.status(200).json(docs);
         } catch (e) {
             console.log(e);
-            res.status(500).end();
+            return res.status(500).end();
         }
     }
 

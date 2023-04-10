@@ -8,4 +8,6 @@ router.get('/get_all/:user_id', TodoController.getAllTodoByUserID)
 
 router.post('/create_todo', TodoController.createTodo)
 
+router.delete('/delete/:id', TodoController.deleteTodo)
+
 export default router
