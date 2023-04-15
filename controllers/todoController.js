@@ -49,8 +49,8 @@ class todoController{
 
     async deleteTodo(req, res){
         try {
-            const id = req.params.id;
-            const found = await todo.findOneAndDelete({id})
+            const _id = req.params.id
+            const found = await todo.findByIdAndDelete(_id)
             if (!found) {
                 return res.status(404).send('Запись не найдена')
             }
@@ -61,6 +61,21 @@ class todoController{
         }
     }
 
+
+    async updateTodo(req, res){
+        try {
+            const { id } = req.params;
+            const { user_id, label, description, priority, date, done } = req.body;
+            const updatedTodo = await todo.findByIdAndUpdate(id, { user_id, label, description, priority, date, done }, { new: true });
+            if (!updatedTodo) {
+                return res.status(404).end();
+            }
+            return res.status(200).end();
+        } catch (err) {
+            console.error(err);
+            return res.status(500).end();
+        }
+    }
     async getAllTodoByUserID(req, res) {
         try {
             const user_id = req.params.user_id;
@@ -81,7 +96,7 @@ class todoController{
             console.log("Todo created")
         }catch (e){
             res.status(500).end()
-            console.log("Error")
+            console.log(e)
         }
         return res
     }

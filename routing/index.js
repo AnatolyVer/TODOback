@@ -10,4 +10,6 @@ router.post('/create_todo', TodoController.createTodo)
 
 router.delete('/delete/:id', TodoController.deleteTodo)
 
+router.put('/update/:id', TodoController.updateTodo)
+
 export default router
