@@ -89,9 +89,10 @@ class todoController{
     }
 
     async createTodo(req, res){
-        const todo_to_create = req.body
+        const { user_id, label, description, priority, date, done, id } = req.body;
+        const _id = id;
         try {
-            await todo.create(todo_to_create)
+            await todo.create({user_id, label, description, priority, date, done, _id})
             res.status(200).end()
             console.log("Todo created")
         }catch (e){
