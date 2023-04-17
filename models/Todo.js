@@ -12,7 +12,8 @@ const todoSchema = new mongoose.Schema({
     _id: {
         type: Number,
         required: true,
-        unique: true
+        unique: true,
+        default: Date.now()
     },
     description: {
         type: String,
@@ -30,6 +31,6 @@ const todoSchema = new mongoose.Schema({
         type: Boolean,
         required: true
     }
-}, { _id: false });
+}, { autoCreate: false });
 
 export default mongoose.model('todo', todoSchema)
