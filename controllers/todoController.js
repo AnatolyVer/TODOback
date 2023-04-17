@@ -1,51 +1,8 @@
 import todo from "../models/Todo.js";
+import todoDto from "../dto/todo_dto.js";
 
-const todos = [
-    {
-        user_id:"1234",
-    label:"Test label",
-    id:"1",
-    description:"Description 1",
-    done:"false",
-    priority:"Priority level 1",
-    date: "1.01.2024"
-},
-    {
-        label:"Test label",
-        id:"2",
-        description:"Description 2",
-        done:"false",
-        priority:"Priority level 2",
-        date: "1.01.2024"
-    },
-    {
-        label:"Test label",
-        id:"3",
-        description:"Description 3",
-        done:"true",
-        priority:"Priority level 3",
-        date: "1.01.2024"
-    },
-    {
-        label:"Test label",
-        id:"4",
-        description:"Description 4",
-        done:"true",
-        priority:"Priority level 4",
-        date: "1.01.2024"
-    }
-    ]
 
 class todoController{
-    async getAllTodo(req, res){
-        try {
-            console.log("sending data...")
-           res.json(todos)
-
-        }catch (e){
-            console.log(e)
-        }
-    }
 
     async deleteTodo(req, res){
         try {
@@ -80,8 +37,13 @@ class todoController{
         try {
             const user_id = req.params.user_id;
             const docs = await todo.find({ user_id });
+            const transformedDocs = [];
+            for (const doc of docs) {
+                const transformedDoc = new todoDto(doc)
+                transformedDocs.push(transformedDoc)
+            }
             docs.sort((a, b) => a.priority.localeCompare(b.priority));
-            return res.status(200).json(docs);
+            return res.status(200).json(transformedDocs);
         } catch (e) {
             console.log(e);
             return res.status(500).end();
