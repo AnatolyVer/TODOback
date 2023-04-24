@@ -1,5 +1,6 @@
-import todo from "../models/Todo.js";
+/*
 import todoDto from "../dto/todo_dto.js";
+import todo from "../models/Todo.js";
 
 
 class todoController{
@@ -18,15 +19,15 @@ class todoController{
         }
     }
 
-
     async updateTodo(req, res){
         try {
-            const { id } = req.params;
+            const _id  = req.params.id;
             const { user_id, label, description, priority, date, done } = req.body;
-            const updatedTodo = await todo.findByIdAndUpdate(id, { user_id, label, description, priority, date, done }, { new: true });
+            const updatedTodo = await todo.findByIdAndUpdate(_id, { user_id, label, description, priority, date, done }, { new: true });
             if (!updatedTodo) {
                 return res.status(404).end();
             }
+            console.log(updatedTodo)
             return res.status(200).end();
         } catch (err) {
             console.error(err);
@@ -65,4 +66,4 @@ class todoController{
     }
 }
 const TodoController = new todoController()
-export default TodoController
+export default TodoController*/
