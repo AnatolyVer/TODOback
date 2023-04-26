@@ -17,18 +17,21 @@ class UserController{
                     return res.status(200).json(new UserDto(user))
                 }
             }
-            return res.status(404).end()
+            return res.status(404).json({errorMessage: "Wrong login or password"})
         } catch (e) {
             console.error(e)
             return res.status(500).end()
         }
     }
 
-    async signIn(req, res){
+    async signUp(req, res){
         try {
             const {userDto, refreshToken} = await userService.create(req.body)
-            res.cookie('refreshToken', refreshToken, { maxAge: 1209600000, httpOnly: true });
-            return res.status(200).json(userDto)
+            if (userDto){
+                res.cookie('refreshToken', refreshToken, { maxAge: 1209600000, httpOnly: true });
+                return res.status(200).json(userDto)
+            }
+            return res.status(400).json({errorMessage: "Login is already used"});
         } catch (err) {
             console.error(err);
             return res.status(500).end();
