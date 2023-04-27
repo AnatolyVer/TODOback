@@ -17,7 +17,7 @@ class UserController{
                     return res.status(200).json(new UserDto(user))
                 }
             }
-            return res.status(404).json({errorMessage: "Wrong login or password"})
+            return res.status(404).send("Wrong login or password")
         } catch (e) {
             console.error(e)
             return res.status(500).end()
@@ -31,7 +31,7 @@ class UserController{
                 res.cookie('refreshToken', refreshToken, { maxAge: 1209600000, httpOnly: true });
                 return res.status(200).json(userDto)
             }
-            return res.status(400).json({errorMessage: "Login is already used"});
+            return res.status(400).send("User already exists")
         } catch (err) {
             console.error(err);
             return res.status(500).end();

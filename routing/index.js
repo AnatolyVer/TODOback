@@ -18,7 +18,7 @@ router.put('/update/:id', TodoController.updateTodo)*/
 /*-------------------------- User -------------------------*/
 
 router.post('/auth', UserController.auth)
-router.post('/sign_in', UserController.signIn)
+router.post('/sign_up', UserController.signUp)
 
 
 export default router
