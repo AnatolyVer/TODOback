@@ -11,7 +11,7 @@ class todoController{
             if (!found) {
                 return res.status(404).send('Запись не найдена')
             }
-            const index = found.todos.findIndex(obj => obj._id === todo_id);
+            const index = found.todos.findIndex(obj => obj._id === todo_id.toInt);
             found.todos.splice(index, 1);
             await found.save()
             return res.status(200).send('Запись успешно удалена')
@@ -42,13 +42,17 @@ class todoController{
         try {
             const user_id = req.params.user_id;
             const user = await User.findById(user_id);
-            const transformedDocs = [];
-            for (const todo of user.todos) {
-                const transformedDoc = new todoDto(todo)
-                transformedDocs.push(transformedDoc)
+            if (user){
+                user.todos.sort((a, b) => a.priority.localeCompare(b.priority));
+                const transformedDocs = [];
+                for (const todo of user.todos) {
+                    const transformedDoc = new todoDto(todo)
+                    transformedDocs.push(transformedDoc)
+                }
+                console.log(transformedDocs)
+                return res.status(200).json(transformedDocs);
             }
-            transformedDocs.sort((a, b) => a.priority.localeCompare(b.priority));
-            return res.status(200).json(transformedDocs);
+            return res.status(404).end();
         } catch (e) {
             console.log(e);
             return res.status(500).end();
