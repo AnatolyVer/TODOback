@@ -1,5 +1,4 @@
 class todoDto{
-    user_id
     label
     id
     description
@@ -7,7 +6,6 @@ class todoDto{
     date
     done
     constructor(obj) {
-        this.user_id = obj.user_id
         this.label = obj.label
         this.id = obj._id
         this.description = obj.description

@@ -1,5 +1,5 @@
 import { Router } from "express";
-/*import TodoController from "../controllers/todoController.js";*/
+import TodoController from "../controllers/todoController.js";
 import UserController from "../controllers/userController.js";
 
 const router = Router()
@@ -7,13 +7,13 @@ const router = Router()
 
 /*-------------------------- Todo -------------------------*/
 
-/*router.get('/get_all/:user_id', TodoController.getAllTodoByUserID)
+router.get('/get_all/:user_id', TodoController.getAllTodoByUserID)
 
 router.post('/create_todo', TodoController.createTodo)
 
-router.delete('/delete/:id', TodoController.deleteTodo)
+router.delete('/delete', TodoController.deleteTodo)
 
-router.put('/update/:id', TodoController.updateTodo)*/
+router.put('/update', TodoController.updateTodo)
 
 /*-------------------------- User -------------------------*/
 
