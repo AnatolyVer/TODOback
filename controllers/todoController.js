@@ -1,4 +1,3 @@
-import todoDto from "../dto/todo_dto.js";
 import User from "../models/User.js";
 
 class todoController{
@@ -11,7 +10,7 @@ class todoController{
             if (!found) {
                 return res.status(404).send('Запись не найдена')
             }
-            const index = found.todos.findIndex(obj => obj._id === todo_id.toInt);
+            const index = found.todos.findIndex(obj => obj._id === +todo_id);
             found.todos.splice(index, 1);
             await found.save()
             return res.status(200).send('Запись успешно удалена')
@@ -23,20 +22,31 @@ class todoController{
 
     async updateTodo(req, res){
         try {
-            const user_id  = req.query.user_id
-            const { id, label, description, priority, date, done} = req.body;
+            const user_id = req.query.user_id;
+            const id = req.body.id; // предположим, что id тудушки передан в параметрах запроса
             const user = await User.findById(user_id);
             if (!user) {
                 return res.status(404).end();
             }
-            const index = user.todos.findIndex(obj => obj._id === id);
-            user.todos[index] = { _id:id, label, description, priority, date, done}
-            user.save()
+            const index = user.todos.findIndex(obj => obj.id === id);
+            if (index === -1) {
+                return res.status(404).end();
+            }
+            const oldTodo = user.todos[index];
+            const newTodo = req.body;
+            for (let key in oldTodo) {
+                if (newTodo[key] === null && key !== "id") {
+                    newTodo[key] = oldTodo[key];
+                }
+            }
+            user.todos[index] = newTodo;
+            await user.save();
             return res.status(200).end();
         } catch (err) {
             console.error(err);
             return res.status(500).end();
         }
+
     }
     async getAllTodoByUserID(req, res) {
         try {
@@ -44,13 +54,7 @@ class todoController{
             const user = await User.findById(user_id);
             if (user){
                 user.todos.sort((a, b) => a.priority.localeCompare(b.priority));
-                const transformedDocs = [];
-                for (const todo of user.todos) {
-                    const transformedDoc = new todoDto(todo)
-                    transformedDocs.push(transformedDoc)
-                }
-                console.log(transformedDocs)
-                return res.status(200).json(transformedDocs);
+                return res.status(200).json(user.todos);
             }
             return res.status(404).end();
         } catch (e) {
@@ -63,11 +67,10 @@ class todoController{
         try {
             const { id, label, description, priority, date, done} = req.body;
             const user_id = req.query.user_id
-            const todo_id = id
             const found = await User.findById(user_id)
             const todos = found.todos
             console.log(todos)
-            found.todos.push({label, description, priority, date, done, _id:todo_id})
+            found.todos.push({id, label, description, priority, date, done})
             await found.save()
             res.status(200).end()
             console.log("Todo created")
