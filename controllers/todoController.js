@@ -34,12 +34,12 @@ class todoController{
             }
             const oldTodo = user.todos[index];
             const newTodo = req.body;
-            for (let key in oldTodo) {
-                if (oldTodo[key] !== null && key !== "id") {
-                    newTodo[key] = oldTodo[key];
+            for (let key in newTodo) {
+                if (newTodo[key] !== null && key !== "id") {
+                    oldTodo[key] = newTodo[key];
                 }
             }
-            user.todos[index] = newTodo;
+            user.todos[index] = oldTodo;
             await user.save();
             return res.status(200).end();
         } catch (err) {
