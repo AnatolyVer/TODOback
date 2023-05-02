@@ -35,7 +35,7 @@ class todoController{
             const oldTodo = user.todos[index];
             const newTodo = req.body;
             for (let key in oldTodo) {
-                if (newTodo[key] === null && key !== "id") {
+                if (oldTodo[key] !== null && key !== "id") {
                     newTodo[key] = oldTodo[key];
                 }
             }
