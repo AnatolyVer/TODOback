@@ -9,7 +9,8 @@ const router = Router()
 
 router.get('/get_all/:user_id', TodoController.getAllTodoByUserID)
 
-router.post('/create_todo', TodoController.createTodo)
+router.post('/create_todo', /*checkValidToken,*/ TodoController.createTodo)
+router.post('/add_tag', UserController.addTag)
 
 router.delete('/delete', TodoController.deleteTodo)
 

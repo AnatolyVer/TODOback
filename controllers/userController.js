@@ -13,6 +13,7 @@ class UserController{
                     const {accessToken, refreshToken} = await tokenService.generate(user)
                     user.accessToken = accessToken
                     user.refreshToken = refreshToken
+                    res.cookie('refreshToken', refreshToken, { maxAge: 1209600000, httpOnly: true });
                     await user.save()
                     return res.status(200).json(new UserDto(user))
                 }
@@ -37,6 +38,24 @@ class UserController{
             return res.status(500).end();
         }
     }
+
+    async addTag(req, res){
+        try {
+            const user_id = req.query.user_id
+            const tag = req.query.tag
+            const user = await User.findById(user_id)
+            if (!user) {
+                return res.status(404).end()
+            }
+            user.Tags.push(tag)
+            user.save()
+            return res.status(200).end()
+        } catch (err) {
+            console.error(err);
+            return res.status(500).end()
+        }
+    }
+
 }
 const userController = new UserController()
 export default userController

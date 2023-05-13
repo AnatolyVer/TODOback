@@ -5,6 +5,10 @@ const userSchema = new mongoose.Schema({
         type:[Object],
         default: []
     },
+    tags: {
+        type:[String],
+        default: []
+    },
     accessToken: {
         type: String,
         default: "",

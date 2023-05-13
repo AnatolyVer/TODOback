@@ -1,5 +1,4 @@
 import User from "../models/User.js";
-
 class todoController{
 
     async deleteTodo(req, res){
@@ -23,7 +22,7 @@ class todoController{
     async updateTodo(req, res){
         try {
             const user_id = req.query.user_id;
-            const id = req.body.id; // предположим, что id тудушки передан в параметрах запроса
+            const id = req.body.id;
             const user = await User.findById(user_id);
             if (!user) {
                 return res.status(404).end();
@@ -65,12 +64,18 @@ class todoController{
 
     async createTodo(req, res){
         try {
-            const { id, label, description, priority, date, done} = req.body;
+           /* const accessToken = req.headers['authorization'].split(' ')[1]
+            const refreshToken = req.cookies.refreshToken
+
+            const errors = validationResult(req)
+            if (!errors.isEmpty()) {
+                return res.status(400).json(errors.array())
+            }*/
+            const { id, label, description, priority, date, done, Tags} = req.body;
             const user_id = req.query.user_id
             const found = await User.findById(user_id)
             const todos = found.todos
-            console.log(todos)
-            found.todos.push({id, label, description, priority, date, done})
+            todos.push({id, label, description, priority, date, done, Tags})
             await found.save()
             res.status(200).end()
             console.log("Todo created")
