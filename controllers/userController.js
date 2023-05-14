@@ -55,7 +55,19 @@ class UserController{
             return res.status(500).end()
         }
     }
-
+    async getTags(req, res){
+        try {
+            const user_id = req.query.user_id
+            const user = await User.findById(user_id)
+            if (!user) {
+                return res.status(404).end()
+            }
+            return res.status(200).json(user.tags)
+        } catch (err) {
+            console.error(err);
+            return res.status(500).end()
+        }
+    }
 }
 const userController = new UserController()
 export default userController

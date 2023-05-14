@@ -8,6 +8,7 @@ const router = Router()
 /*-------------------------- Todo -------------------------*/
 
 router.get('/get_all/:user_id', TodoController.getAllTodoByUserID)
+router.get('/get_tags', UserController.getTags)
 
 router.post('/create_todo', /*checkValidToken,*/ TodoController.createTodo)
 router.post('/add_tag', UserController.addTag)
