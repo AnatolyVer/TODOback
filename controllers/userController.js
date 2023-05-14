@@ -47,7 +47,7 @@ class UserController{
             if (!user) {
                 return res.status(404).end()
             }
-            user.Tags.push(tag)
+            user.tags.push(tag)
             user.save()
             return res.status(200).end()
         } catch (err) {

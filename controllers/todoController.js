@@ -9,7 +9,8 @@ class todoController{
             if (!found) {
                 return res.status(404).send('Запись не найдена')
             }
-            const index = found.todos.findIndex(obj => obj._id === +todo_id);
+            const index = found.todos.findIndex(obj => obj.id === +todo_id);
+
             found.todos.splice(index, 1);
             await found.save()
             return res.status(200).send('Запись успешно удалена')
