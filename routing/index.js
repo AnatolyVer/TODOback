@@ -14,6 +14,7 @@ router.post('/create_todo', /*checkValidToken,*/ TodoController.createTodo)
 router.post('/add_tag', UserController.addTag)
 
 router.delete('/delete', TodoController.deleteTodo)
+router.delete('/delete_tag', UserController.deleteTag)
 
 router.put('/update', TodoController.updateTodo)
 

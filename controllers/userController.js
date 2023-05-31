@@ -55,6 +55,29 @@ class UserController{
             return res.status(500).end()
         }
     }
+
+    async deleteTag(req, res) {
+        try {
+            const user_id = req.query.user_id;
+            const tag = req.query.tag;
+            const user = await User.findById(user_id);
+            if (!user) {
+                return res.status(404).end();
+            }
+            const tagIndex = user.tags.indexOf(tag);
+            if (tagIndex === -1) {
+                return res.status(404).end();
+            }
+            user.tags.splice(tagIndex, 1);
+            await user.save();
+            return res.status(200).end();
+        } catch (err) {
+            console.error(err);
+            return res.status(500).end();
+        }
+    }
+
+
     async getTags(req, res){
         try {
             const user_id = req.query.user_id
