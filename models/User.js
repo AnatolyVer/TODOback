@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
         default: []
     },
     tags: {
-        type:[String],
+        type:[Object],
         default: []
     },
     accessToken: {
