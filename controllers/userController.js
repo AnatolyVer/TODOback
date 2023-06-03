@@ -43,11 +43,13 @@ class UserController{
         try {
             const user_id = req.query.user_id
             const tag = req.query.tag
+            const {settings} = req.body
             const user = await User.findById(user_id)
             if (!user) {
                 return res.status(404).end()
             }
-            user.tags.push(tag)
+            user.tags.push({tag, settings})
+            console.log(user.tags)
             user.save()
             return res.status(200).end()
         } catch (err) {
