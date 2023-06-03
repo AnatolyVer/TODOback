@@ -42,13 +42,13 @@ class UserController{
     async addTag(req, res){
         try {
             const user_id = req.query.user_id
-            const tag = req.query.tag
+            const name = req.query.tag
             const settings = req.body
             const user = await User.findById(user_id)
             if (!user) {
                 return res.status(404).end()
             }
-            user.tags.push({name:tag, settings})
+            user.tags.push({name, settings})
             user.save()
             return res.status(200).end()
         } catch (err) {
@@ -60,12 +60,12 @@ class UserController{
     async deleteTag(req, res) {
         try {
             const user_id = req.query.user_id;
-            const tag = req.query.tag;
+            const name = req.query.tag;
             const user = await User.findById(user_id);
             if (!user) {
                 return res.status(404).end();
             }
-            const tagIndex = user.tags.indexOf(tag);
+            const tagIndex = user.tags.findIndex(obj => obj.name === name);
             if (tagIndex === -1) {
                 return res.status(404).end();
             }
