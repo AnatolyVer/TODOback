@@ -109,7 +109,6 @@ class UserController{
         }
     }
 
-
     async getTags(req, res){
         try {
             const user_id = req.query.user_id
