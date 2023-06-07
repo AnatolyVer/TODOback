@@ -46,8 +46,8 @@ class todoController{
             console.error(err);
             return res.status(500).end();
         }
-
     }
+
     async getAllTodoByUserID(req, res) {
         try {
             const user_id = req.params.user_id;

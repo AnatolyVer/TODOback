@@ -43,17 +43,48 @@ class UserController{
         try {
             const user_id = req.query.user_id
             const name = req.query.tag
+            const id = req.query.id
             const settings = req.body
             const user = await User.findById(user_id)
             if (!user) {
                 return res.status(404).end()
             }
-            user.tags.push({name, settings})
+            user.tags.push({name, id, settings})
             user.save()
             return res.status(200).end()
         } catch (err) {
             console.error(err);
             return res.status(500).end()
+        }
+    }
+
+    async updateTag(req, res){
+        try {
+            const user_id = req.query.user_id
+            const name = req.query.tag
+            const id = req.query.id
+            const settings = req.body
+            const user = await User.findById(user_id)
+            if (!user) {
+                return res.status(404).end()
+            }
+            const index = user.tags.findIndex(obj => obj.id === id);
+            if (index === -1) {
+                return res.status(404).end();
+            }
+            const oldTag = user.tags[index];
+            const newTag = {name, settings};
+            for (let key in newTag) {
+                if (newTag[key] !== null && key !== "id") {
+                    oldTag[key] = newTag[key];
+                }
+            }
+            user.tags[index] = oldTag;
+            await user.save();
+            return res.status(200).end();
+        } catch (err) {
+            console.error(err);
+            return res.status(500).end();
         }
     }
 
