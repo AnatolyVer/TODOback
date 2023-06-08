@@ -90,17 +90,24 @@ class UserController{
 
     async deleteTag(req, res) {
         try {
-            const user_id = req.query.user_id;
-            const name = req.query.tag;
-            const user = await User.findById(user_id);
+            const user_id = req.query.user_id
+            const id = req.query.id
+            const user = await User.findById(user_id)
             if (!user) {
-                return res.status(404).end();
+                return res.status(404).end()
             }
-            const tagIndex = user.tags.findIndex(obj => obj.name === name);
+            const tagIndex = user.tags.findIndex(obj => obj.id === id)
             if (tagIndex === -1) {
-                return res.status(404).end();
+                return res.status(404).end()
             }
-            user.tags.splice(tagIndex, 1);
+            user.tags.splice(tagIndex, 1)
+            let index
+            do {
+                index = user.todos.findIndex(obj => obj.tags.id === id);
+                if (index > -1) {
+                    user.todos.splice(index, 1);
+                }
+            } while (index > -1);
             await user.save();
             return res.status(200).end();
         } catch (err) {
