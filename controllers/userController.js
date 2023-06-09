@@ -92,6 +92,7 @@ class UserController{
         try {
             const user_id = req.query.user_id
             const id = req.query.id
+            console.log(user_id, id)
             const user = await User.findById(user_id)
             if (!user) {
                 return res.status(404).end()
