@@ -58,6 +58,24 @@ class UserController{
         }
     }
 
+    async addFavorite(req, res){
+        try {
+            const user_id = req.query.user_id
+            const type = req.body.type
+            const itemId = req.body.itemId
+            const user = await User.findById(user_id)
+            if (!user) {
+                return res.status(404).end()
+            }
+            user.favorites.push({type, itemId})
+            user.save()
+            return res.status(200).end()
+        } catch (err) {
+            console.error(err);
+            return res.status(500).end()
+        }
+    }
+
     async updateTag(req, res){
         try {
             const user_id = req.query.user_id
@@ -92,7 +110,6 @@ class UserController{
         try {
             const user_id = req.query.user_id
             const id = req.query.id
-            console.log(user_id, id)
             const user = await User.findById(user_id)
             if (!user) {
                 return res.status(404).end()
@@ -117,6 +134,29 @@ class UserController{
         }
     }
 
+    async deleteFavorite(req, res) {
+        try {
+            const user_id = req.query.user_id
+            const itemId = req.query.itemId
+            const user = await User.findById(user_id)
+            if (!user) {
+                return res.status(404).end()
+            }
+
+            const favoriteIndex = user.favorites.findIndex(obj => obj.itemId === itemId)
+            if (favoriteIndex === -1) {
+                return res.status(404).end()
+            }
+            user.favorites.splice(favoriteIndex, 1)
+            await user.save();
+            return res.status(200).end();
+        } catch (err) {
+            console.error(err);
+            return res.status(500).end();
+        }
+    }
+
+
     async getTags(req, res){
         try {
             const user_id = req.query.user_id
@@ -130,6 +170,22 @@ class UserController{
             return res.status(500).end()
         }
     }
+
+    async getFavorites(req, res){
+        try {
+            const user_id = req.query.user_id
+            const user = await User.findById(user_id)
+            if (!user) {
+                return res.status(404).end()
+            }
+            return res.status(200).json(user.favorites)
+        } catch (err) {
+            console.error(err);
+            return res.status(500).end()
+        }
+    }
+
+
 }
 const userController = new UserController()
 export default userController

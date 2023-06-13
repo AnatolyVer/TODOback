@@ -9,6 +9,10 @@ const userSchema = new mongoose.Schema({
         type:[Object],
         default: []
     },
+    favorites: {
+        type:[Object],
+        default: []
+    },
     accessToken: {
         type: String,
         default: "",
