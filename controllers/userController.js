@@ -156,7 +156,6 @@ class UserController{
         }
     }
 
-
     async getTags(req, res){
         try {
             const user_id = req.query.user_id
@@ -185,7 +184,40 @@ class UserController{
         }
     }
 
+    async getInboxID(req, res){
+        try {
+            const user_id = req.query.user_id
+            const user = await User.findById(user_id)
+            if (!user) {
+                return res.status(404).end()
+            }
+            console.log(user.inboxID)
+            if (!(user.inboxID.length)){
+                console.log('update')
+                user.inboxID = Date.now().toString()
+                await user.save()
+            }
+            console.log(user.inboxID)
+            return res.status(200).json(user.inboxID)
+        } catch (err) {
+            console.error(err);
+            return res.status(500).end()
+        }
+    }
 
+    async getProjects(req, res){
+        try {
+            const user_id = req.query.user_id
+            const user = await User.findById(user_id)
+            if (!user) {
+                return res.status(404).end()
+            }
+            return res.status(200).json(user.projects)
+        } catch (err) {
+            console.error(err);
+            return res.status(500).end()
+        }
+    }
 }
 const userController = new UserController()
 export default userController

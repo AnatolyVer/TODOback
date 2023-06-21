@@ -32,6 +32,15 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    inboxID: {
+        type: String,
+        default:'',
+        unique:true
+    },
+    projects: {
+        type: [Object],
+        default:[]
+    },
 });
 
 export default mongoose.model('user', userSchema)

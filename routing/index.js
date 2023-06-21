@@ -10,7 +10,8 @@ const router = Router()
 router.get('/get_all/:user_id', TodoController.getAllTodoByUserID)
 router.get('/get_tags', UserController.getTags)
 router.get('/get_favorites', UserController.getFavorites)
-
+router.get('/get_inboxID', UserController.getInboxID)
+router.get('/get_projects', UserController.getProjects)
 
 router.post('/create_todo', /*checkValidToken,*/ TodoController.createTodo)
 router.post('/add_tag', UserController.addTag)
