@@ -16,6 +16,7 @@ router.get('/get_projects', UserController.getProjects)
 router.post('/create_todo', /*checkValidToken,*/ TodoController.createTodo)
 router.post('/add_tag', UserController.addTag)
 router.post('/add_favorite', UserController.addFavorite)
+router.post('/add_project', UserController.addProject)
 
 router.delete('/delete', TodoController.deleteTodo)
 router.delete('/delete_tag', UserController.deleteTag)

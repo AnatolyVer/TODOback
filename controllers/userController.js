@@ -68,7 +68,24 @@ class UserController{
                 return res.status(404).end()
             }
             user.favorites.push({type, itemId})
-            user.save()
+            await user.save()
+            return res.status(200).end()
+        } catch (err) {
+            console.error(err);
+            return res.status(500).end()
+        }
+    }
+
+
+    async addProject(req, res){
+        try {
+            const user_id = req.query.user_id
+            const user = await User.findById(user_id)
+            if (!user) {
+                return res.status(404).end()
+            }
+            user.projects.push({...req.body})
+            await user.save()
             return res.status(200).end()
         } catch (err) {
             console.error(err);
