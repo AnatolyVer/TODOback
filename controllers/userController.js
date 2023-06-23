@@ -151,6 +151,35 @@ class UserController{
         }
     }
 
+    async deleteProject(req, res) {
+        try {
+            const user_id = req.query.user_id
+            const id = req.query.id
+            const user = await User.findById(user_id)
+            if (!user) {
+                return res.status(404).end()
+            }
+            const tagIndex = user.projects.findIndex(obj => obj.id === id)
+            if (tagIndex === -1) {
+                return res.status(404).end()
+            }
+            user.projects.splice(tagIndex, 1)
+
+           /* let index
+            do {
+                index = user.todos.findIndex(obj => obj.tags.id === id);
+                console.log(user.todos[index])
+            } while (index > -1);*/
+
+            await user.save();
+            return res.status(200).end();
+        } catch (err) {
+            console.error(err);
+            return res.status(500).end();
+        }
+    }
+
+
     async deleteFavorite(req, res) {
         try {
             const user_id = req.query.user_id
@@ -235,6 +264,28 @@ class UserController{
             return res.status(500).end()
         }
     }
+
+    async getProject(req, res){
+        try {
+            const user_id = req.query.user_id
+            const id = req.query.id
+            const user = await User.findById(user_id)
+            if (!user) {
+                return res.status(404).end()
+            }
+            let todos = []
+            user.todos.map(obj => {
+                if (obj.projectId === id) todos.push(obj)
+            });
+
+            return res.status(200).json(todos)
+        } catch (err) {
+            console.error(err);
+            return res.status(500).end()
+        }
+    }
+
+
 }
 const userController = new UserController()
 export default userController
