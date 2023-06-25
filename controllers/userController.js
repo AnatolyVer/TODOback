@@ -76,7 +76,6 @@ class UserController{
         }
     }
 
-
     async addProject(req, res){
         try {
             const user_id = req.query.user_id

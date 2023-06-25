@@ -4,7 +4,6 @@ import UserController from "../controllers/userController.js";
 
 const router = Router()
 
-
 /*-------------------------- Todo -------------------------*/
 
 router.get('/get_all/:user_id', TodoController.getAllTodoByUserID)
