@@ -72,11 +72,11 @@ class todoController{
             if (!errors.isEmpty()) {
                 return res.status(400).json(errors.array())
             }*/
-            const { id, label, description, priority, date, done, tags} = req.body;
+            const { id, label, description, priority, date, done, tags, projectId} = req.body;
             const user_id = req.query.user_id
             const found = await User.findById(user_id)
             const todos = found.todos
-            todos.push({id, label, description, priority, date, done, tags})
+            todos.push({id, label, description, priority, date, done, tags, projectId})
             await found.save()
             res.status(200).end()
             console.log("Todo created")
