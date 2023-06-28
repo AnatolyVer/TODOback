@@ -92,6 +92,36 @@ class UserController{
         }
     }
 
+    async updateProject(req, res){
+        try {
+            const user_id = req.query.user_id
+            const id = req.query.id
+            const {name, color} = req.body
+            const user = await User.findById(user_id)
+            if (!user) {
+                return res.status(404).end()
+            }
+            const index = user.projects.findIndex(obj => obj.id === id);
+            if (index === -1) {
+                return res.status(404).end();
+            }
+            const oldProject = user.projects[index];
+            const newProject = {name, color};
+            for (let key in newProject) {
+                if (newProject[key] !== null && key !== "id") {
+                    oldProject[key] = newProject[key];
+                }
+            }
+            user.projects[index] = oldProject;
+            await user.save();
+            return res.status(200).end();
+        } catch (err) {
+            console.error(err);
+            return res.status(500).end();
+        }
+    }
+
+
     async updateTag(req, res){
         try {
             const user_id = req.query.user_id
