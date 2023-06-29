@@ -53,7 +53,9 @@ class todoController{
             const user_id = req.params.user_id;
             const user = await User.findById(user_id);
             if (user){
-                user.todos.map(obj => obj.projectId = user.inboxId)
+                user.todos.map(obj => {
+                    if (!(obj.projectId)) obj.projectId = user.inboxID
+                })
                 user.todos.sort((a, b) => a.priority.localeCompare(b.priority));
                 await user.save()
                 return res.status(200).json(user.todos);
@@ -61,7 +63,7 @@ class todoController{
             return res.status(404).end();
         } catch (e) {
             console.log(e);
-            return res.status(500).endq
+            return res.status(500).end()
         }
     }
 

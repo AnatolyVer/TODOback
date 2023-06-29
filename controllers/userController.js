@@ -266,13 +266,10 @@ class UserController{
             if (!user) {
                 return res.status(404).end()
             }
-            console.log(user.inboxID)
             if (!(user.inboxID.length)){
-                console.log('update')
                 user.inboxID = Date.now().toString()
                 await user.save()
             }
-            console.log(user.inboxID)
             return res.status(200).json(user.inboxID)
         } catch (err) {
             console.error(err);
