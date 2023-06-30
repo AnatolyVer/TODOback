@@ -96,7 +96,6 @@ class UserController{
         try {
             const user_id = req.query.user_id
             const id = req.query.id
-            const {name, color} = req.body
             const user = await User.findById(user_id)
             if (!user) {
                 return res.status(404).end()
@@ -106,7 +105,7 @@ class UserController{
                 return res.status(404).end();
             }
             const oldProject = user.projects[index];
-            const newProject = {name, color};
+            const newProject = req.body
             for (let key in newProject) {
                 if (newProject[key] !== null && key !== "id") {
                     oldProject[key] = newProject[key];
