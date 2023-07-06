@@ -4,10 +4,10 @@ import UserDto from "../dto/userDto.js";
 import bcrypt from "bcrypt";
 
 class UserService{
-    async create({login, password}){
+    async create({login, password, name, picture}){
         try{
-            const hashedPassword = await bcrypt.hash(password, await bcrypt.genSalt())
-            const user = await User.create({login, password: hashedPassword })
+            const hashedPassword = password ? await bcrypt.hash(password, await bcrypt.genSalt()) : ""
+            const user = await User.create({login, password: hashedPassword, name, picture })
             const {accessToken, refreshToken} = await tokenService.generate(user)
             user.accessToken = accessToken
             user.refreshToken = refreshToken

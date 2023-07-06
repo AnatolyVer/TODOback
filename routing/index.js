@@ -32,6 +32,7 @@ router.put('/update_project', UserController.updateProject)
 /*-------------------------- User -------------------------*/
 
 router.post('/auth', UserController.auth)
+router.post('/auth_with', UserController.authWithService)
 router.post('/sign_up', UserController.signUp)
 
 

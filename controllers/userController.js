@@ -25,6 +25,26 @@ class UserController{
         }
     }
 
+    async authWithService(req, res){
+        try {
+            const {login} = req.body
+            const user = await User.findOne({login})
+            if(user){
+                const {accessToken, refreshToken} = await tokenService.generate(user)
+                user.accessToken = accessToken
+                user.refreshToken = refreshToken
+                res.cookie('refreshToken', refreshToken, { maxAge: 1209600000, httpOnly: true });
+                await user.save()
+                return res.status(200).json(new UserDto(user))
+            }
+            return res.status(404).send("Wrong login or password")
+        } catch (e) {
+            console.error(e)
+            return res.status(500).end()
+        }
+    }
+
+
     async signUp(req, res){
         try {
             const {userDto, refreshToken} = await userService.create(req.body)

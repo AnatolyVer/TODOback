@@ -5,6 +5,14 @@ const userSchema = new mongoose.Schema({
         type:[Object],
         default: []
     },
+    name:{
+        type: String,
+        default: ''
+    },
+    picture:{
+        type: String,
+        default: ''
+    },
     tags: {
         type:[Object],
         default: []
@@ -30,7 +38,7 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
+        required: false
     },
     inboxID: {
         type: String,
