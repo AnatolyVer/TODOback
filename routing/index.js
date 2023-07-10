@@ -28,6 +28,8 @@ router.delete('/delete_project', UserController.deleteProject)
 router.put('/update', TodoController.updateTodo)
 router.put('/update_tag', UserController.updateTag)
 router.put('/update_project', UserController.updateProject)
+router.put('/mapping', TodoController.mapping)
+
 
 /*-------------------------- User -------------------------*/
 

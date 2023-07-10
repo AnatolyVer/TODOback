@@ -85,8 +85,36 @@ class todoController{
             res.status(500).end()
             console.log(e)
         }
-        return res
     }
+
+    async mapping(req, res){
+        try {
+            const user_id = req.query.user_id
+            const method = req.query.method
+            const todosID = req.body
+            const user = await User.findById(user_id)
+            if (!user) {
+                return res.status(404).end()
+            }
+            switch (method){
+                case 'delete':
+                    user.todos = user.todos.filter(todo => !todosID.includes(todo.id));
+                    break;
+                case 'complete':
+                    user.todos = user.todos.map(todo => {
+                        if (todosID.includes(todo.id)) todo.done = true
+                    });
+                    break;
+            }
+            await user.save()
+            return res.status(200).end()
+        } catch (err) {
+            console.error(err);
+            return res.status(500).end()
+        }
+    }
+
+
 }
 const TodoController = new todoController()
 export default TodoController
