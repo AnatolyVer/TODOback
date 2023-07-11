@@ -42,7 +42,7 @@ const userSchema = new mongoose.Schema({
     },
     inboxID: {
         type: String,
-        default:'',
+        default:Date.now(),
         unique:true
     },
     projects: {

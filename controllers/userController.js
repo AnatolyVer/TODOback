@@ -48,6 +48,7 @@ class UserController{
     async signUp(req, res){
         try {
             const {userDto, refreshToken} = await userService.create(req.body)
+            console.log(userDto)
             if (userDto){
                 res.cookie('refreshToken', refreshToken, { maxAge: 1209600000, httpOnly: true });
                 return res.status(200).json(userDto)
