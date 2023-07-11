@@ -101,7 +101,7 @@ class todoController{
                     user.todos = user.todos.filter(todo => !todosID.includes(todo.id));
                     break;
                 case 'complete':
-                    user.todos = user.todos.map(todo => {
+                    user.todos.map(todo => {
                         if (todosID.includes(todo.id)) todo.done = true
                     });
                     break;
