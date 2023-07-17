@@ -42,7 +42,6 @@ const userSchema = new mongoose.Schema({
     },
     inboxID: {
         type: String,
-        default:Date.now(),
         unique:true
     },
     projects: {

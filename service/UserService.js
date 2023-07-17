@@ -7,7 +7,7 @@ class UserService{
     async create({login, password, name, picture}){
         try{
             const hashedPassword = password ? await bcrypt.hash(password, await bcrypt.genSalt()) : ""
-            const user = await User.create({login, password: hashedPassword, name, picture})
+            const user = await User.create({login, password: hashedPassword, name, picture, inboxID:Date.now()})
             const {accessToken, refreshToken} = await tokenService.generate(user)
             user.accessToken = accessToken
             user.refreshToken = refreshToken
