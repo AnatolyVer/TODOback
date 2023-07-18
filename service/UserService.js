@@ -7,7 +7,8 @@ class UserService{
     async create({login, password, name, picture}){
         try{
             const hashedPassword = password ? await bcrypt.hash(password, await bcrypt.genSalt()) : ""
-            const user = await User.create({login, password: hashedPassword, name, picture, inboxID:Date.now()})
+            const regType = password ? 'password' : 'google'
+            const user = await User.create({login, password: hashedPassword, name, picture, inboxID:Date.now(), regType})
             const {accessToken, refreshToken} = await tokenService.generate(user)
             user.accessToken = accessToken
             user.refreshToken = refreshToken
@@ -16,7 +17,6 @@ class UserService{
             return {userDto, refreshToken}
         }catch (e)
         {
-            console.log(e)
             return {userDto: null, refreshToken: null}
         }
 

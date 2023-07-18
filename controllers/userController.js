@@ -7,7 +7,7 @@ class UserController{
     async auth(req, res){
         try {
             const {login, password} = req.body
-            const user = await User.findOne({login})
+            const user = await User.findOne({login, regType:'password'})
             if(user){
                 if (await bcrypt.compare(password, user.password)){
                     const {accessToken, refreshToken} = await tokenService.generate(user)
@@ -28,7 +28,7 @@ class UserController{
     async authWithService(req, res){
         try {
             const {login} = req.body
-            const user = await User.findOne({login})
+            const user = await User.findOne({login, regType:'google'})
             if(user){
                 const {accessToken, refreshToken} = await tokenService.generate(user)
                 user.accessToken = accessToken
@@ -48,7 +48,6 @@ class UserController{
     async signUp(req, res){
         try {
             const {userDto, refreshToken} = await userService.create(req.body)
-            console.log(userDto)
             if (userDto){
                 res.cookie('refreshToken', refreshToken, { maxAge: 1209600000, httpOnly: true });
                 return res.status(200).json(userDto)

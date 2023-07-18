@@ -48,6 +48,9 @@ const userSchema = new mongoose.Schema({
         type: [Object],
         default:[]
     },
+    regType: {
+        type:String
+    }
 });
 
 export default mongoose.model('user', userSchema)
