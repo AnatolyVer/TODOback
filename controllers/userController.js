@@ -3,6 +3,21 @@ import userService from "../service/UserService.js";
 import bcrypt from "bcrypt";
 import UserDto from "../dto/userDto.js";
 import tokenService from "../service/TokenService.js";
+import path from 'path'
+import { Storage } from '@google-cloud/storage'
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const credentialsPath = path.join(__dirname, '../sharp-gecko-393815-705b237df0fb.json');
+process.env.GOOGLE_APPLICATION_CREDENTIALS = credentialsPath;
+
+const storage = new Storage({ projectId: 'sharp-gecko-393815' });
+const bucketName = 'todos-backend-nodejs-storage';
+const bucket = storage.bucket(bucketName);
+
 class UserController{
     async auth(req, res){
         try {
@@ -43,7 +58,6 @@ class UserController{
             return res.status(500).end()
         }
     }
-
 
     async signUp(req, res){
         try {
@@ -213,11 +227,16 @@ class UserController{
             }
             user.projects.splice(tagIndex, 1)
 
-           /* let index
-            do {
-                index = user.todos.findIndex(obj => obj.tags.id === id);
-                console.log(user.todos[index])
-            } while (index > -1);*/
+            /* let index
+             do {
+                 index = user.todos.findIndex(obj => obj.tags.id === id);
+                 console.log(user.todos[index])
+             } while (index > -1);*/
+            /* let index
+             do {
+                 index = user.todos.findIndex(obj => obj.tags.id === id);
+                 console.log(user.todos[index])
+             } while (index > -1);*/
 
             await user.save();
             return res.status(200).end();
@@ -330,8 +349,74 @@ class UserController{
         }
     }
 
+    async setAvatar(req, res){
+        try {
+            const avatar = req.file;
+            if (!avatar) {
+                return res.status(400).send('Файл не был загружен.');
+            }
+            const nickname = req.body.nickname
+            const fileName = nickname + '_avatar'
+            const gcsFile = bucket.file(fileName);
+
+            const stream = gcsFile.createWriteStream({
+                metadata: {
+                    contentType: avatar.mimetype,
+                },
+            });
+
+            stream.on('error', (err) => {
+                console.error('Ошибка при загрузке файла:', err);
+                next(err);
+            });
+
+            stream.on('finish', () => {
+                console.log('Файл успешно загружен на Google Cloud Storage.');
+                const file = bucket.file(nickname + '_avatar');
 
 
+                file.getSignedUrl({
+                    action: 'read',
+                    expires: '03-09-2033',
+                }, (err, url) => {
+                    if (err) {
+                        console.error('Ошибка при получении ссылки на файл:', err);
+                        res.status(500).send('Произошла ошибка при получении файла.');
+                    } else {
+                        return res.status(200).send(url)
+                    }
+                });
+            });
+            stream.end(avatar.buffer);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).end()
+        }
+    }
+
+    async getAvatar(req, res){
+        try {
+            const nickname = req.params.nickname;
+            const file = bucket.file(nickname + '_avatar');
+
+
+            file.getSignedUrl({
+                action: 'read',
+                expires: '03-09-2033',
+            }, (err, url) => {
+                if (err) {
+                    console.error('Ошибка при получении ссылки на файл:', err);
+                    res.status(500).send('Произошла ошибка при получении файла.');
+                } else {
+                    return res.status(200).send(url)
+                }
+            });
+
+        } catch (err) {
+            console.error(err);
+            return res.status(500).end()
+        }
+    }
 
 }
 const userController = new UserController()

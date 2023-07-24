@@ -4,6 +4,9 @@ import UserController from "../controllers/userController.js";
 
 const router = Router()
 
+import multer from 'multer'
+const upload = multer();
+
 /*-------------------------- Todo -------------------------*/
 
 router.get('/get_all/:user_id', TodoController.getAllTodoByUserID)
@@ -32,10 +35,12 @@ router.put('/mapping', TodoController.mapping)
 
 
 /*-------------------------- User -------------------------*/
+router.get('/get_avatar/:nickname', UserController.getAvatar)
 
 router.post('/auth', UserController.auth)
 router.post('/auth_with', UserController.authWithService)
 router.post('/sign_up', UserController.signUp)
+router.post('/set_avatar', upload.single('image'), UserController.setAvatar)
 
 
 export default router
