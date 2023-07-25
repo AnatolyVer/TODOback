@@ -389,7 +389,7 @@ class UserController{
                         console.error('Ошибка при получении ссылки на файл:', err);
                         res.status(500).send('Произошла ошибка при получении файла.');
                     } else {
-                        return res.status(200).send(url + '?date=' + Date.now())
+                        return res.status(200).send(url + '&date=' + Date.now())
                     }
                 });
             });
