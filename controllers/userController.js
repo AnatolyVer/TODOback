@@ -4,9 +4,9 @@ import bcrypt from "bcrypt";
 import UserDto from "../dto/userDto.js";
 import tokenService from "../service/TokenService.js";
 import path from 'path'
-import { Storage } from '@google-cloud/storage'
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import {Storage} from '@google-cloud/storage'
+import {fileURLToPath} from 'url';
+import {dirname}  from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -374,16 +374,22 @@ class UserController{
                 console.log('Файл успешно загружен на Google Cloud Storage.');
                 const file = bucket.file(nickname + '_avatar');
 
+                const currentDate = new Date();
+
+                const expirationDate = new Date(currentDate);
+                expirationDate.setFullYear(currentDate.getFullYear() + 1);
+
+                const formattedExpirationDate = `${expirationDate.getMonth() + 1}-${expirationDate.getDate()}-${expirationDate.getFullYear()}`;
 
                 file.getSignedUrl({
                     action: 'read',
-                    expires: '03-09-2033',
+                    expires: formattedExpirationDate,
                 }, (err, url) => {
                     if (err) {
                         console.error('Ошибка при получении ссылки на файл:', err);
                         res.status(500).send('Произошла ошибка при получении файла.');
                     } else {
-                        return res.status(200).send(url)
+                        return res.status(200).send(url + '?date=' + Date.now())
                     }
                 });
             });
