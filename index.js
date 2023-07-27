@@ -7,18 +7,22 @@ import cookieParser from 'cookie-parser'
 import router from './routing/index.js'
 
 import * as dotenv from 'dotenv'
+import {config} from "dotenv";
+
+/*-------------------------- SETTINGS -------------------------*/
+
+const PORT = process.env.PORT || 3000
 
 /*-------------------------- SETTINGS -------------------------*/
 
 mongoose.set('strictQuery', true)
 dotenv.config()
 mongoose
-.connect(process.env.MONGO_URL)
-.then(() => console.log("Successfully connected to DB")
-).catch(() => console.log("Failed connection to DB"))
+    .connect(process.env.MONGO_URL)
+    .then(() => console.log("Successfully connected to DB")
+    ).catch(() => console.log("Failed connection to DB"))
 
 const app = express()
-
 
 app.use(cookieParser('key'))
 app.use(express.json())
@@ -45,9 +49,10 @@ app.post('/upload', upload.single('image'), (req, res) => {
     res.status(200)
 })
 
+
 /*-------------------------- RUNNING SERVER --------------------------*/
 
-app.listen(process.env.PORT, (err) => {
+app.listen(PORT, (err) => {
     if (err) console.log("Server doesn't work")
-    else console.log(`Server started at port ${process.env.PORT}`)
+    else console.log(`Server started at port ${PORT}`)
 })

@@ -49,6 +49,9 @@ const userSchema = new mongoose.Schema({
     },
     regType: {
         type:String
+    },
+    emailIsVerified:{
+        type: Boolean
     }
 });
 

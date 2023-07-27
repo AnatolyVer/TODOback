@@ -6,6 +6,8 @@ class userDto{
     tags
     name
     picture
+    regType
+    emailIsVerified
     constructor(obj) {
         this.user_id = obj._id
         this.todos = obj.todos
@@ -14,6 +16,8 @@ class userDto{
         this.tags = obj.tags
         this.name = obj.name
         this.picture = obj.picture
+        this.regType = obj.regType
+        this.emailIsVerified = obj.emailIsVerified
     }
 }
 

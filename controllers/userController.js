@@ -7,6 +7,8 @@ import path from 'path'
 import { Storage } from '@google-cloud/storage'
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import Verify from "../models/Verify.js";
+import jwt from "jsonwebtoken";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -392,6 +394,28 @@ class UserController{
         }
     }
 
+    async confirmEmail(req, res){
+        try {
+            const emailToken = req.body.emailToken;
+            const record = await Verify.findOne({emailToken})
+            if (!record) return res.status(404).end()
+            jwt.verify(emailToken, process.env.emailSecretKey, async (err, decoded) => {
+                if (err) {
+                    return res.status(404).end()
+                } else {
+                    await Verify.deleteOne({emailToken});
+                    const user = await User.findOne({login: record.email})
+                    user.emailIsVerified = true
+                    await user.save()
+                    return res.status(200).end()
+                }
+            });
+
+        } catch (err) {
+            console.error(err);
+            return res.status(500).end()
+        }
+    }
 }
 const userController = new UserController()
 export default userController

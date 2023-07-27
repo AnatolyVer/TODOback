@@ -40,6 +40,10 @@ router.get('/get_avatar/:nickname', UserController.getAvatar)
 router.post('/auth', UserController.auth)
 router.post('/auth_with', UserController.authWithService)
 router.post('/sign_up', UserController.signUp)
+
+router.post('/confirm_email', UserController.confirmEmail)
+
+
 router.post('/set_avatar', upload.single('image'), UserController.setAvatar)
 
 
