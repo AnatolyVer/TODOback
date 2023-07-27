@@ -4,9 +4,9 @@ import bcrypt from "bcrypt";
 import UserDto from "../dto/userDto.js";
 import tokenService from "../service/TokenService.js";
 import path from 'path'
-import {Storage} from '@google-cloud/storage'
-import {fileURLToPath} from 'url';
-import {dirname}  from 'path';
+import { Storage } from '@google-cloud/storage'
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -226,26 +226,14 @@ class UserController{
                 return res.status(404).end()
             }
             user.projects.splice(tagIndex, 1)
-
-            /* let index
-             do {
-                 index = user.todos.findIndex(obj => obj.tags.id === id);
-                 console.log(user.todos[index])
-             } while (index > -1);*/
-            /* let index
-             do {
-                 index = user.todos.findIndex(obj => obj.tags.id === id);
-                 console.log(user.todos[index])
-             } while (index > -1);*/
-
+            user.todos = user.todos.filter(obj => obj.projectId !== id)
             await user.save();
-            return res.status(200).end();
+            return res.status(200).json(user.todos);
         } catch (err) {
             console.error(err);
             return res.status(500).end();
         }
     }
-
 
     async deleteFavorite(req, res) {
         try {
@@ -355,8 +343,7 @@ class UserController{
             if (!avatar) {
                 return res.status(400).send('Файл не был загружен.');
             }
-            const nickname = req.body.nickname
-            const fileName = nickname + '_avatar'
+            const fileName = req.body.nickname + '_' + 'avatar'; // Генерируем уникальное имя файла
             const gcsFile = bucket.file(fileName);
 
             const stream = gcsFile.createWriteStream({
@@ -372,26 +359,7 @@ class UserController{
 
             stream.on('finish', () => {
                 console.log('Файл успешно загружен на Google Cloud Storage.');
-                const file = bucket.file(nickname + '_avatar');
-
-                const currentDate = new Date();
-
-                const expirationDate = new Date(currentDate);
-                expirationDate.setFullYear(currentDate.getFullYear() + 1);
-
-                const formattedExpirationDate = `${expirationDate.getMonth() + 1}-${expirationDate.getDate()}-${expirationDate.getFullYear()}`;
-
-                file.getSignedUrl({
-                    action: 'read',
-                    expires: formattedExpirationDate,
-                }, (err, url) => {
-                    if (err) {
-                        console.error('Ошибка при получении ссылки на файл:', err);
-                        res.status(500).send('Произошла ошибка при получении файла.');
-                    } else {
-                        return res.status(200).send(url + '&date=' + Date.now())
-                    }
-                });
+                return res.status(200).end()
             });
             stream.end(avatar.buffer);
         } catch (err) {
