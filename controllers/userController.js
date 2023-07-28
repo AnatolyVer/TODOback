@@ -404,13 +404,12 @@ class UserController{
                     return res.status(404).end()
                 } else {
                     await Verify.deleteOne({emailToken});
-                    const user = await User.findOne({login: record.email})
+                    const user = await User.findOne({login: record.email, regType:'password'})
                     user.emailIsVerified = true
                     await user.save()
                     return res.status(200).end()
                 }
             });
-
         } catch (err) {
             console.error(err);
             return res.status(500).end()

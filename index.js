@@ -7,7 +7,6 @@ import cookieParser from 'cookie-parser'
 import router from './routing/index.js'
 
 import * as dotenv from 'dotenv'
-import {config} from "dotenv";
 
 /*-------------------------- SETTINGS -------------------------*/
 
