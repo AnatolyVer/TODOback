@@ -419,7 +419,7 @@ class UserController{
 
     async resendEmail(req, res){
         try {
-            const login = req.query.login;
+            const login = req.body.login;
             await EmailService.sendVerification(login)
         } catch (err) {
             console.error(err);
