@@ -427,6 +427,18 @@ class UserController{
         }
     }
 
+
+    async sendEmailVerifiedStatus(req, res){
+        try {
+            const login = req.query.login;
+            const user = await User.findOne({login})
+            return res.status(200).json(user.emailIsVerified)
+        } catch (err) {
+            console.error(err);
+            return res.status(500).end()
+        }
+    }
+
 }
 const userController = new UserController()
 export default userController

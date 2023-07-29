@@ -36,6 +36,7 @@ router.put('/mapping', TodoController.mapping)
 
 /*-------------------------- User -------------------------*/
 router.get('/get_avatar/:nickname', UserController.getAvatar)
+router.get('/get_verification_status', UserController.sendEmailVerifiedStatus)
 
 router.post('/auth', UserController.auth)
 router.post('/auth_with', UserController.authWithService)
