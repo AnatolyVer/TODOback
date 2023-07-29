@@ -1,10 +1,8 @@
 import User from "../models/User.js";
-import Verify from "../models/Verify.js";
 import tokenService from "./TokenService.js";
 import UserDto from "../dto/userDto.js";
 import bcrypt from "bcrypt";
-import sendEmailConfirm from '../emailer/emailSender.js'
-import jwt from "jsonwebtoken"
+import EmailService from "./emailService.js";
 class UserService{
     async create({login, password, name, picture}){
         try{
@@ -17,11 +15,7 @@ class UserService{
             user.refreshToken = refreshToken
             await user.save()
             const userDto = new UserDto(user)
-            if (regType === 'password') {
-                const emailToken = jwt.sign({login}, process.env.emailSecretKey)
-                await Verify.create({email:login,emailToken})
-                sendEmailConfirm(login, emailToken);
-            }
+            if (regType === 'password') await EmailService.sendVerification(login)
             return {userDto, refreshToken}
         }catch (e)
         {

@@ -9,6 +9,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import Verify from "../models/Verify.js";
 import jwt from "jsonwebtoken";
+import EmailService from "../service/emailService.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -415,6 +416,17 @@ class UserController{
             return res.status(500).end()
         }
     }
+
+    async resendEmail(req, res){
+        try {
+            const login = req.query.login;
+            EmailService.sendVerification(login)
+        } catch (err) {
+            console.error(err);
+            return res.status(500).end()
+        }
+    }
+
 }
 const userController = new UserController()
 export default userController

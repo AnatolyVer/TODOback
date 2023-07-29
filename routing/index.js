@@ -42,6 +42,7 @@ router.post('/auth_with', UserController.authWithService)
 router.post('/sign_up', UserController.signUp)
 
 router.post('/confirm_email', UserController.confirmEmail)
+router.post('/resend_email', UserController.resendEmail)
 
 
 router.post('/set_avatar', upload.single('image'), UserController.setAvatar)
