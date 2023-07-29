@@ -421,6 +421,7 @@ class UserController{
         try {
             const login = req.body.login;
             await EmailService.sendVerification(login)
+            return res.status(200).end()
         } catch (err) {
             console.error(err);
             return res.status(500).end()
