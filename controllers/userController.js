@@ -29,11 +29,16 @@ class UserController{
             if(user){
                 if (await bcrypt.compare(password, user.password)){
                     const {accessToken, refreshToken} = await tokenService.generate(user)
-                    user.accessToken = accessToken
-                    user.refreshToken = refreshToken
+                    user.session.push(
+                        {
+                            accessToken,
+                            refreshToken,
+                            logged_at: new Date()
+                        }
+                    )
                     res.cookie('refreshToken', refreshToken, { maxAge: 1209600000, httpOnly: true });
                     await user.save()
-                    return res.status(200).json(new UserDto(user))
+                    return res.status(200).json(new UserDto(user, accessToken))
                 }
             }
             return res.status(404).send("Wrong login or password")
@@ -49,15 +54,19 @@ class UserController{
             const user = await User.findOne({login, regType:'google'})
             if(user){
                 const {accessToken, refreshToken} = await tokenService.generate(user)
-                user.accessToken = accessToken
-                user.refreshToken = refreshToken
+                user.session.push(
+                    {
+                        accessToken,
+                        refreshToken,
+                        logged_at: new Date()
+                    }
+                )
                 res.cookie('refreshToken', refreshToken, { maxAge: 1209600000, httpOnly: true });
                 await user.save()
-                return res.status(200).json(new UserDto(user))
+                return res.status(200).json(new UserDto(user, accessToken))
             }
             return res.status(404).send("Wrong login or password")
         } catch (e) {
-            console.error(e)
             return res.status(500).end()
         }
     }
@@ -439,6 +448,17 @@ class UserController{
             return res.status(500).end()
         }
     }
+
+    async checkTokenValid(req, res){
+        try {
+            return res.status(200).send("All is valid")
+        } catch (err) {
+            console.log(err)
+            return res.status(500).end()
+        }
+    }
+
+
 
 }
 const userController = new UserController()
