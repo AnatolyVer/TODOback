@@ -2,6 +2,8 @@ import { Router } from "express";
 import TodoController from "../controllers/todoController.js";
 import UserController from "../controllers/userController.js";
 
+import checkValidToken from "../validation/tokenValid.js";
+
 const router = Router()
 
 import multer from 'multer'
@@ -37,6 +39,8 @@ router.put('/mapping', TodoController.mapping)
 /*-------------------------- User -------------------------*/
 router.get('/get_avatar/:nickname', UserController.getAvatar)
 router.get('/get_verification_status', UserController.sendEmailVerifiedStatus)
+
+router.get('/checkTokenValid', checkValidToken, UserController.checkTokenValid)
 
 router.post('/auth', UserController.auth)
 router.post('/auth_with', UserController.authWithService)
