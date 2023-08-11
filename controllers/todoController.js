@@ -65,13 +65,6 @@ class todoController{
 
     async createTodo(req, res){
         try {
-           /* const accessToken = req.headers['authorization'].split(' ')[1]
-            const refreshToken = req.cookies.refreshToken
-
-            const errors = validationResult(req)
-            if (!errors.isEmpty()) {
-                return res.status(400).json(errors.array())
-            }*/
             const { id, label, description, priority, date, done, tags, projectId} = req.body;
             const user_id = req.query.user_id
             const found = await User.findById(user_id)
