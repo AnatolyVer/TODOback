@@ -11,7 +11,7 @@ const upload = multer();
 
 /*-------------------------- Todo -------------------------*/
 
-router.get('/get_all/:user_id', TodoController.getAllTodoByUserID)
+router.get('/get_all', TodoController.getAllTodoByUserID)
 router.get('/get_tags', UserController.getTags)
 router.get('/get_favorites', UserController.getFavorites)
 router.get('/get_inboxID', UserController.getInboxID)
