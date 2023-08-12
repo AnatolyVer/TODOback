@@ -28,8 +28,6 @@ class EmailService{
             '<a href=\'http://localhost:5173/email_verification?token=' + token + '\'>Click me!</a>'
         )
     }
-
-
     async sendVerification(email){
         try {
             await Verify.deleteOne({email});
@@ -40,7 +38,6 @@ class EmailService{
             console.error(e)
         }
     }
-
     async confirmEmail(emailToken){
         try {
             const record = await Verify.findOne({emailToken})
@@ -59,7 +56,6 @@ class EmailService{
             console.log("Some problems with sending verify email")
         }
     }
-
 
     #sendEmailConfirm(to, token) {
         const mailOptions = {

@@ -32,7 +32,7 @@ class UserService{
     }
     async authUser(userToAuth, regType, res){
         try{
-            const {login, password} = userToAuth
+            const {login, password = ''} = userToAuth
             const user = await User.findOne({login, regType})
             if (await bcrypt.compare(password, user.password) || regType === 'google'){
                 const {accessToken, refreshToken} = await this.#createSession(user)
