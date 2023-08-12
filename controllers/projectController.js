@@ -6,7 +6,7 @@ class ProjectController{
         try {
             const userId = req.query.user_id
             const project = req.body
-            await ProjectService.addProject(userId, project)
+            await ProjectService.addProject(userId, project, res)
         } catch (e) {
             console.error(e);
             res.status(500).end()
