@@ -13,18 +13,13 @@ class UserService{
             const hashedPassword = password ? await bcrypt.hash(password, await bcrypt.genSalt()) : ""
             const regType = password ? 'password' : 'google'
             const emailIsVerified = regType === 'google'
-
             const user = await User.create({login, password: hashedPassword, name, picture, inboxID:Date.now(), regType, emailIsVerified})
-
-            const {accessToken, refreshToken} = await TokenService.generate(user)
-            user.accessToken = accessToken
-            user.refreshToken = refreshToken
-            await user.save()
+            const {accessToken, refreshToken} = await this.#createSession(user)
 
             if (regType === 'password') await EmailService.sendVerification(login)
 
             res.cookie('refreshToken', refreshToken, { maxAge: 1209600000, httpOnly: true });
-            res.status(200).json(new UserDto(user))
+            res.status(200).json(new UserDto({...user, accessToken}))
         }catch (e) {
             console.error(e)
             res.status(400).send("User already exists")
@@ -41,7 +36,7 @@ class UserService{
             }
         }catch (e){
             console.error(e)
-            res.status(404).end()
+            res.status(404).send("Wrong data or user don't exist")
         }
     }
     async #createSession(user){
