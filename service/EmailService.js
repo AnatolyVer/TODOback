@@ -43,17 +43,18 @@ class EmailService{
             const record = await Verify.findOne({emailToken})
             jwt.verify(emailToken, process.env.EMAIL_SECRET_KEY, async (err, decoded) => {
                 if (err) {
-                    return res.status(404).end()
+                    res.status(404).end()
                 } else {
                     await Verify.deleteOne({emailToken});
                     const user = await User.findOne({login: record.email, regType:'password'})
                     user.emailIsVerified = true
                     await user.save()
-                    return res.status(200).end()
+                    res.status(200).end()
                 }
             });
         }catch (e){
             console.log("Some problems with sending verify email")
+            res.status(404).end()
         }
     }
 

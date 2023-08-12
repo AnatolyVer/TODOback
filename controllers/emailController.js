@@ -8,8 +8,6 @@ class EmailController{
         try {
             const emailToken = req.body.emailToken;
             await EmailService.confirmEmail(emailToken)
-
-
         } catch (err) {
             console.error(err);
             return res.status(500).end()
