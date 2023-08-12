@@ -5,49 +5,35 @@ class todoController{
     async createTodo(req, res){
         try {
             const userId = req.query.user_id
-            const user = await User.findById(userId)
-            if (user){
-                const todo = req.body
-                await TodoService.addTodo(user, todo)
-                res.status(200).end()
-            }
+            const todo = req.body
+            await TodoService.addTodo(userId, todo, res)
         }catch (e){
             console.error(e)
             res.status(500).end()
         }
+        return res
     }
     async getAllTodoByUserID(req, res) {
         try {
             const userId = req.query.user_id
-            const user = await User.findById(userId)
-            if (user){
-                await TodoService.sortTodos(user)
-                return res.status(200).json(user.todos)
-            }
-            return res.status(404).end()
+            await TodoService.getSortedTodos(userId, res)
         } catch (e) {
             console.error(e)
-            return res.status(500).end()
+            res.status(500).end()
         }
+        return res
     }
     async updateTodo(req, res){
         try {
             const userId = req.query.user_id;
-            const user = await User.findById(userId);
-            if (user) {
-                const todoId = req.body.id;
-                const index = user.todos.findIndex(obj => obj.id === todoId);
-                if (index !== -1) {
-                    const newTodo = req.body;
-                    await TodoService.updateTodo(user, index, newTodo)
-                    return res.status(200).end();
-                }
-            }
-            return res.status(404).end();
+            const oldTodoId = req.body.id;
+            const newTodo = req.body;
+            await TodoService.updateTodo(userId, oldTodoId, newTodo, res)
         } catch (e) {
             console.error(e);
-            return res.status(500).end();
+            res.status(500).end();
         }
+        return res
     }
     async mapping(req, res){
         try {
@@ -78,19 +64,14 @@ class todoController{
     async deleteTodo(req, res){
         try {
             const userId = req.query.user_id
-            const user = await User.findById(userId)
-            if (user) {
-                const todoId = req.query.todo_id
-                const index = user.todos.findIndex(obj => obj.id === +todoId);
-                user.todos.splice(index, 1);
-                await user.save()
-                return res.status(200).end()
-            }
-            return res.status(404).end()
+            const todoId = req.query.todo_id
+            console.log(typeof todoId)
+            await TodoService.deleteTodo(userId, todoId, res)
         } catch (e) {
             console.error(e)
-            return res.status(500).end()
+            res.status(500).end()
         }
+        return res
     }
 }
 const TodoController = new todoController()
