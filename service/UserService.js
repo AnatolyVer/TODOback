@@ -32,7 +32,7 @@ class UserService{
             if (await bcrypt.compare(password, user.password) || regType === 'google'){
                 const {accessToken, refreshToken} = await this.#createSession(user)
                 res.cookie('refreshToken', refreshToken, { maxAge: 1209600000, httpOnly: true });
-                res.status(200).json(new UserDto(user, accessToken))
+                res.status(200).json(new UserDto({...user, accessToken}))
             }
         }catch (e){
             console.error(e)
