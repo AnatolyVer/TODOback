@@ -36,7 +36,7 @@ class TagController{
     async getTags(req, res){
         try {
             const userId = req.query.user_id
-            await TagService.getTags(userId)
+            await TagService.getTags(userId, res)
         } catch (err) {
             console.error(err);
             res.status(500).end()
