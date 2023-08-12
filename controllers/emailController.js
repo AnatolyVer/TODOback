@@ -7,7 +7,7 @@ class EmailController{
     async confirmEmail(req, res){
         try {
             const emailToken = req.body.emailToken;
-            await EmailService.confirmEmail(emailToken)
+            await EmailService.confirmEmail(emailToken, res)
         } catch (err) {
             console.error(err);
             return res.status(500).end()

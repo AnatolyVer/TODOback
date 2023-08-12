@@ -38,7 +38,7 @@ class EmailService{
             console.error(e)
         }
     }
-    async confirmEmail(emailToken){
+    async confirmEmail(emailToken, res){
         try {
             const record = await Verify.findOne({emailToken})
             jwt.verify(emailToken, process.env.EMAIL_SECRET_KEY, async (err, decoded) => {
