@@ -43,25 +43,6 @@ class UserController{
         }
         return res
     }
-
-    async addFavorite(req, res){
-        try {
-            const user_id = req.query.user_id
-            const type = req.body.type
-            const itemId = req.body.itemId
-            const user = await User.findById(user_id)
-            if (!user) {
-                return res.status(404).end()
-            }
-            user.favorites.push({type, itemId})
-            await user.save()
-            return res.status(200).end()
-        } catch (err) {
-            console.error(err);
-            return res.status(500).end()
-        }
-    }
-
     async addProject(req, res){
         try {
             const user_id = req.query.user_id
@@ -105,33 +86,6 @@ class UserController{
             return res.status(500).end();
         }
     }
-    async deleteTag(req, res) {
-        try {
-            const user_id = req.query.user_id
-            const id = req.query.id
-            const user = await User.findById(user_id)
-            if (!user) {
-                return res.status(404).end()
-            }
-            const tagIndex = user.tags.findIndex(obj => obj.id === id)
-            if (tagIndex === -1) {
-                return res.status(404).end()
-            }
-            user.tags.splice(tagIndex, 1)
-            let index
-            do {
-                index = user.todos.findIndex(obj => obj.tags.id === id);
-                if (index > -1) {
-                    user.todos.splice(index, 1);
-                }
-            } while (index > -1);
-            await user.save();
-            return res.status(200).end();
-        } catch (err) {
-            console.error(err);
-            return res.status(500).end();
-        }
-    }
 
     async deleteProject(req, res) {
         try {
@@ -152,56 +106,6 @@ class UserController{
         } catch (err) {
             console.error(err);
             return res.status(500).end();
-        }
-    }
-
-    async deleteFavorite(req, res) {
-        try {
-            const user_id = req.query.user_id
-            const itemId = req.query.itemId
-            const user = await User.findById(user_id)
-            if (!user) {
-                return res.status(404).end()
-            }
-
-            const favoriteIndex = user.favorites.findIndex(obj => obj.itemId === itemId)
-            if (favoriteIndex === -1) {
-                return res.status(404).end()
-            }
-            user.favorites.splice(favoriteIndex, 1)
-            await user.save();
-            return res.status(200).end();
-        } catch (err) {
-            console.error(err);
-            return res.status(500).end();
-        }
-    }
-
-    async getTags(req, res){
-        try {
-            const user_id = req.query.user_id
-            const user = await User.findById(user_id)
-            if (!user) {
-                return res.status(404).end()
-            }
-            return res.status(200).json(user.tags)
-        } catch (err) {
-            console.error(err);
-            return res.status(500).end()
-        }
-    }
-
-    async getFavorites(req, res){
-        try {
-            const user_id = req.query.user_id
-            const user = await User.findById(user_id)
-            if (!user) {
-                return res.status(404).end()
-            }
-            return res.status(200).json(user.favorites)
-        } catch (err) {
-            console.error(err);
-            return res.status(500).end()
         }
     }
 

@@ -6,7 +6,8 @@ import cookieParser from 'cookie-parser'
 
 import userRouter from './routing/user.js'
 import tagRouter from "./routing/tag.js";
-
+import todoRouter from "./routing/todo.js";
+import favoriteRouter from "./routing/favorite.js";
 
 import * as dotenv from 'dotenv'
 
@@ -34,6 +35,9 @@ app.use('/uploads', express.static('uploads'))
 
 app.use('/user', userRouter)
 app.use('/tag', tagRouter)
+app.use('/todo', todoRouter)
+app.use('/favorite', favoriteRouter)
+
 
 const storage = multer.diskStorage({
     destination:(_, __, cb) => {
