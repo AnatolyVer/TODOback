@@ -19,7 +19,9 @@ class UserService{
             if (regType === 'password') await EmailService.sendVerification(login)
 
             res.cookie('refreshToken', refreshToken, { maxAge: 1209600000, httpOnly: true });
-            res.status(200).json(new UserDto({...user, accessToken}))
+            const userDto = new UserDto({...user, accessToken})
+            console.log(userDto)
+            res.status(200).json(userDto)
         }catch (e) {
             console.error(e)
             res.status(400).send("User already exists")
