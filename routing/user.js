@@ -16,8 +16,4 @@ userRouter.get('/get_verification_status', EmailController.sendEmailVerifiedStat
 userRouter.post('/confirm_email', EmailController.confirmEmail)
 userRouter.post('/resend_email', EmailController.resendEmail)
 
-
-
-
-
 export default userRouter
