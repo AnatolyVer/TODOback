@@ -21,16 +21,6 @@ const userSchema = new mongoose.Schema({
         type:[Object],
         default: []
     },
-    accessToken: {
-        type: String,
-        default: "",
-        unique: true
-    },
-    refreshToken: {
-        type: String,
-        default: "",
-        unique: true
-    },
     login: {
         type: String,
         required: true,
