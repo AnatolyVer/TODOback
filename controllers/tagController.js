@@ -39,8 +39,9 @@ class TagController{
             await TagService.getTags(userId)
         } catch (err) {
             console.error(err);
-            return res.status(500).end()
+            res.status(500).end()
         }
+        return res
     }
 }
 const tagController = new TagController()
