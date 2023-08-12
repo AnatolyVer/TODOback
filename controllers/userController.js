@@ -43,71 +43,6 @@ class UserController{
         }
         return res
     }
-    async addProject(req, res){
-        try {
-            const user_id = req.query.user_id
-            const user = await User.findById(user_id)
-            if (!user) {
-                return res.status(404).end()
-            }
-            user.projects.push({...req.body})
-            await user.save()
-            return res.status(200).end()
-        } catch (err) {
-            console.error(err);
-            return res.status(500).end()
-        }
-    }
-
-    async updateProject(req, res){
-        try {
-            const user_id = req.query.user_id
-            const id = req.query.id
-            const user = await User.findById(user_id)
-            if (!user) {
-                return res.status(404).end()
-            }
-            const index = user.projects.findIndex(obj => obj.id === id);
-            if (index === -1) {
-                return res.status(404).end();
-            }
-            const oldProject = user.projects[index];
-            const newProject = req.body
-            for (let key in newProject) {
-                if (newProject[key] !== null && key !== "id") {
-                    oldProject[key] = newProject[key];
-                }
-            }
-            user.projects[index] = oldProject;
-            await user.save();
-            return res.status(200).end();
-        } catch (err) {
-            console.error(err);
-            return res.status(500).end();
-        }
-    }
-
-    async deleteProject(req, res) {
-        try {
-            const user_id = req.query.user_id
-            const id = req.query.id
-            const user = await User.findById(user_id)
-            if (!user) {
-                return res.status(404).end()
-            }
-            const tagIndex = user.projects.findIndex(obj => obj.id === id)
-            if (tagIndex === -1) {
-                return res.status(404).end()
-            }
-            user.projects.splice(tagIndex, 1)
-            user.todos = user.todos.filter(obj => obj.projectId !== id)
-            await user.save();
-            return res.status(200).json(user.todos);
-        } catch (err) {
-            console.error(err);
-            return res.status(500).end();
-        }
-    }
 
     async getInboxID(req, res){
         try {
@@ -121,40 +56,6 @@ class UserController{
                 await user.save()
             }
             return res.status(200).json(user.inboxID)
-        } catch (err) {
-            console.error(err);
-            return res.status(500).end()
-        }
-    }
-
-    async getProjects(req, res){
-        try {
-            const user_id = req.query.user_id
-            const user = await User.findById(user_id)
-            if (!user) {
-                return res.status(404).end()
-            }
-            return res.status(200).json(user.projects)
-        } catch (err) {
-            console.error(err);
-            return res.status(500).end()
-        }
-    }
-
-    async getProject(req, res){
-        try {
-            const user_id = req.query.user_id
-            const id = req.query.id
-            const user = await User.findById(user_id)
-            if (!user) {
-                return res.status(404).end()
-            }
-            let todos = []
-            user.todos.map(obj => {
-                if (obj.projectId === id) todos.push(obj)
-            });
-
-            return res.status(200).json(todos)
         } catch (err) {
             console.error(err);
             return res.status(500).end()
@@ -196,8 +97,6 @@ class UserController{
         try {
             const nickname = req.query.nickname;
             const file = bucket.file(nickname + '_avatar');
-
-
             file.getSignedUrl({
                 action: 'read',
                 expires: '03-09-2033',
@@ -260,18 +159,6 @@ class UserController{
             return res.status(500).end()
         }
     }
-
-    async checkTokenValid(req, res){
-        try {
-            return res.status(200).send("All is valid")
-        } catch (err) {
-            console.log(err)
-            return res.status(500).end()
-        }
-    }
-
-
-
 }
 const userController = new UserController()
 export default userController

@@ -4,7 +4,7 @@ class TagService{
         try {
             const user = await User.findById(userId)
             user.tags.push(tag)
-            user.save()
+            await user.save()
             res.status(200).end()
         }catch (e){
             console.error(e)

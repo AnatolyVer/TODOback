@@ -10,6 +10,7 @@ import todoRouter from "./routing/todo.js";
 import favoriteRouter from "./routing/favorite.js";
 
 import * as dotenv from 'dotenv'
+import projectRouter from "./routing/project.js";
 
 /*-------------------------- SETTINGS -------------------------*/
 
@@ -37,6 +38,7 @@ app.use('/user', userRouter)
 app.use('/tag', tagRouter)
 app.use('/todo', todoRouter)
 app.use('/favorite', favoriteRouter)
+app.use('/project', projectRouter)
 
 
 const storage = multer.diskStorage({
