@@ -41,7 +41,7 @@ class ProjectController{
     async getProjects(req, res){
         try {
             const userId = req.query.user_id
-            await ProjectService.getProjects(userId)
+            await ProjectService.getProjects(userId, res)
         } catch (err) {
             console.error(err);
             res.status(500).end()
