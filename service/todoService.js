@@ -56,8 +56,28 @@ class TodoService{
             res.status(404).end();
         }
     }
-}
+    async mapping(userId, todosId, method, res) {
+        try {
+            const user = await User.findById(userId)
+            switch (method) {
+                case 'delete':
+                    user.todos = user.todos.filter(todo => !todosId.includes(todo.id));
+                    break;
+                case 'complete':
+                    user.todos.map(todo => {
+                        if (todosId.includes(todo.id)) todo.done = true
+                    });
+                    break;
+            }
+            await user.save()
+            res.status(200).json(user.todos)
+        }catch (e){
+            console.error(e)
+            res.status(404).end()
+        }
 
+    }
+}
 const todoService = new TodoService()
 export default todoService
 

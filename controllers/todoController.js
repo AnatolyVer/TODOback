@@ -38,34 +38,19 @@ class todoController{
     async mapping(req, res){
         try {
             const userId = req.query.userId
-            const user = await User.findById(userId)
-            if (user) {
-                const method = req.query.method
-                const todosId = req.body
-                switch (method){
-                    case 'delete':
-                        user.todos = user.todos.filter(todo => !todosId.includes(todo.id));
-                        break;
-                    case 'complete':
-                        user.todos.map(todo => {
-                            if (todosId.includes(todo.id)) todo.done = true
-                        });
-                        break;
-                }
-                await user.save()
-                return res.status(200).json(user.todos)
-            }
-            return res.status(404).end()
+            const method = req.query.method
+            const todosId = req.body
+            await TodoService.mapping(userId, todosId, method, res)
         } catch (e) {
             console.error(e);
-            return res.status(500).end()
+            res.status(500).end()
         }
+        return res
     }
     async deleteTodo(req, res){
         try {
             const userId = req.query.user_id
             const todoId = req.query.todo_id
-            console.log(typeof todoId)
             await TodoService.deleteTodo(userId, todoId, res)
         } catch (e) {
             console.error(e)
