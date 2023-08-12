@@ -35,10 +35,10 @@ app.use(cors({
 app.use('/uploads', express.static('uploads'))
 
 app.use('/user', userRouter)
-app.use('/tag', tagRouter)
 app.use('/todo', todoRouter)
-app.use('/favorite', favoriteRouter)
+app.use('/tag', tagRouter)
 app.use('/project', projectRouter)
+app.use('/favorite', favoriteRouter)
 
 
 const storage = multer.diskStorage({

@@ -1,13 +1,10 @@
-import jwt from "jsonwebtoken";
 import path, {dirname} from 'path'
 import {fileURLToPath} from 'url';
 import {Storage} from '@google-cloud/storage'
 
-import User from "../models/User.js";
-import Verify from "../models/Verify.js";
+
 
 import userService from "../service/UserService.js";
-import EmailService from "../service/EmailService.js";
 
 import UserService from "../service/UserService.js";
 
@@ -44,23 +41,7 @@ class UserController{
         return res
     }
 
-    async getInboxID(req, res){
-        try {
-            const user_id = req.query.user_id
-            const user = await User.findById(user_id)
-            if (!user) {
-                return res.status(404).end()
-            }
-            if (!(user.inboxID.length)){
-                user.inboxID = Date.now().toString()
-                await user.save()
-            }
-            return res.status(200).json(user.inboxID)
-        } catch (err) {
-            console.error(err);
-            return res.status(500).end()
-        }
-    }
+
 
     async setAvatar(req, res){
         try {

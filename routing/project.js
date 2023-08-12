@@ -8,5 +8,5 @@ projectRouter.get('/get', ProjectController.getProject)
 projectRouter.get('/get_all', ProjectController.getProjects)
 projectRouter.put('/update', ProjectController.updateProject)
 projectRouter.delete('/delete', ProjectController.deleteProject)
-
+projectRouter.get('/get_inboxID', ProjectController.getInboxID)
 export default projectRouter

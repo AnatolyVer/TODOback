@@ -1,4 +1,5 @@
 import ProjectService from "../service/ProjectService.js";
+import User from "../models/User.js";
 
 class ProjectController{
     async addProject(req, res){
@@ -58,6 +59,24 @@ class ProjectController{
             res.status(500).end()
         }
         return res
+    }
+
+    async getInboxID(req, res){
+        try {
+            const user_id = req.query.user_id
+            const user = await User.findById(user_id)
+            if (!user) {
+                return res.status(404).end()
+            }
+            if (!(user.inboxID.length)){
+                user.inboxID = Date.now().toString()
+                await user.save()
+            }
+            return res.status(200).json(user.inboxID)
+        } catch (err) {
+            console.error(err);
+            return res.status(500).end()
+        }
     }
 }
 const projectController = new ProjectController()
