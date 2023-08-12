@@ -52,6 +52,10 @@ const userSchema = new mongoose.Schema({
     },
     emailIsVerified:{
         type: Boolean
+    },
+    session:{
+        type: [Object],
+        default: []
     }
 });
 
