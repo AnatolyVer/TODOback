@@ -114,51 +114,6 @@ class UserController{
             return res.status(500).end()
         }
     }
-
-    async confirmEmail(req, res){
-        try {
-            const emailToken = req.body.emailToken;
-            const record = await Verify.findOne({emailToken})
-            if (!record) return res.status(404).end()
-            jwt.verify(emailToken, process.env.EMAIL_SECRET_KEY, async (err, decoded) => {
-                if (err) {
-                    return res.status(404).end()
-                } else {
-                    await Verify.deleteOne({emailToken});
-                    const user = await User.findOne({login: record.email, regType:'password'})
-                    user.emailIsVerified = true
-                    await user.save()
-                    return res.status(200).end()
-                }
-            });
-        } catch (err) {
-            console.error(err);
-            return res.status(500).end()
-        }
-    }
-
-    async resendEmail(req, res){
-        try {
-            const login = req.body.login;
-            await EmailService.sendVerification(login)
-            return res.status(200).end()
-        } catch (err) {
-            console.error(err);
-            return res.status(500).end()
-        }
-    }
-
-
-    async sendEmailVerifiedStatus(req, res){
-        try {
-            const login = req.query.login;
-            const user = await User.findOne({login})
-            return res.status(200).json(user.emailIsVerified)
-        } catch (err) {
-            console.error(err);
-            return res.status(500).end()
-        }
-    }
 }
 const userController = new UserController()
 export default userController

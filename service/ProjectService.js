@@ -42,7 +42,6 @@ class ProjectService{
             res.status(404).end()
         }
     }
-
     async getProjects(userId){
         try {
             const user = await User.findById(userId)
@@ -52,7 +51,6 @@ class ProjectService{
             res.status(404).end()
         }
     }
-
     async getProject(userId, id,  res){
         try {
             const user = await User.findById(userId)
