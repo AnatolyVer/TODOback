@@ -19,7 +19,8 @@ class UserService{
             if (regType === 'password') await EmailService.sendVerification(login)
 
             res.cookie('refreshToken', refreshToken, { maxAge: 1209600000, httpOnly: true });
-            const userDto = new UserDto({...user, accessToken})
+            const userDto = new UserDto(user, accessToken)
+            console.log(user)
             console.log(userDto)
             res.status(200).json(userDto)
         }catch (e) {
