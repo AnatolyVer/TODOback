@@ -35,7 +35,7 @@ class TagService{
         try {
             const user = await User.findById(userId)
 
-            const tagIndex = user.tags.findIndex(obj => obj.id === id)
+            const tagIndex = user.tags.findIndex(obj => obj.id === tagId)
             if (tagIndex === -1) throw new Error('Tag doesnt found')
             user.tags.splice(tagIndex, 1)
 
