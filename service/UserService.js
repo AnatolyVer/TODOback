@@ -1,27 +1,62 @@
-import User from "../models/User.js";
-import tokenService from "./TokenService.js";
-import UserDto from "../dto/userDto.js";
 import bcrypt from "bcrypt";
-import EmailService from "./emailService.js";
+
+import TokenService from "./TokenService.js";
+import EmailService from "./EmailService.js";
+
+import User from "../models/User.js";
+
+import UserDto from "../dto/userDto.js";
 class UserService{
-    async create({login, password, name, picture}){
+    async createUser(newUser, res){
         try{
+            const {login, password, name, picture} = newUser
             const hashedPassword = password ? await bcrypt.hash(password, await bcrypt.genSalt()) : ""
             const regType = password ? 'password' : 'google'
-            const emailIsVerified =  regType === 'google'
+            const emailIsVerified = regType === 'google'
+
             const user = await User.create({login, password: hashedPassword, name, picture, inboxID:Date.now(), regType, emailIsVerified})
-            const {accessToken, refreshToken} = await tokenService.generate(user)
+
+            const {accessToken, refreshToken} = await TokenService.generate(user)
             user.accessToken = accessToken
             user.refreshToken = refreshToken
             await user.save()
-            const userDto = new UserDto(user)
-            if (regType === 'password') await EmailService.sendVerification(login)
-            return {userDto, refreshToken}
-        }catch (e)
-        {
-            return {userDto: null, refreshToken: null}
-        }
 
+            if (regType === 'password') await EmailService.sendVerification(login)
+
+            res.cookie('refreshToken', refreshToken, { maxAge: 1209600000, httpOnly: true });
+            res.status(200).json(new UserDto(user))
+        }catch (e) {
+            console.error(e)
+            res.status(400).send("User already exists")
+        }
+    }
+    async authUser(userToAuth, regType, res){
+        try{
+            const {login, password} = userToAuth
+            const user = await User.findOne({login, regType})
+            if (await bcrypt.compare(password, user.password) || regType === 'google'){
+                const {accessToken, refreshToken} = await this.#createSession(user)
+                res.cookie('refreshToken', refreshToken, { maxAge: 1209600000, httpOnly: true });
+                res.status(200).json(new UserDto(user, accessToken))
+            }
+        }catch (e){
+            console.error(e)
+            res.status(404).end()
+        }
+    }
+    async #createSession(user){
+        try{
+            const {accessToken, refreshToken} = await TokenService.generate(user)
+            user.session.push({
+                accessToken,
+                refreshToken,
+                logged_at: new Date()
+            })
+            await user.save()
+            return {accessToken, refreshToken}
+        }catch (e) {
+            throw new Error(e)
+        }
     }
 }
 

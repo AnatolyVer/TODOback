@@ -23,21 +23,20 @@ class TodoService{
             res.status(404).end()
         }
     }
-    async updateTodo(userId, oldTodoId, newTodo, res){
+    async updateTodo(userId, newTodo, res){
         try {
             const user = await User.findById(userId);
-            const index = user.todos.findIndex(obj => obj.id === todoId);
-            if (index !== -1){
-                const oldTodo = user.todos[index];
-                for (let key in newTodo) {
-                    if (newTodo[key] !== null && key !== "id") {
-                        oldTodo[key] = newTodo[key];
-                    }
+            const index = user.todos.findIndex(obj => obj.id === newTodo.id);
+            if (index === -1) throw new Error('Todo not found')
+            const oldTodo = user.todos[index];
+            for (let key in newTodo) {
+                if (newTodo[key] !== null && key !== "id") {
+                    oldTodo[key] = newTodo[key];
                 }
-                user.todos[index] = oldTodo;
-                await user.save()
-                res.status(200).end();
             }
+            user.todos[index] = oldTodo;
+            await user.save()
+            res.status(200).end();
         }catch (e) {
             console.error(e)
             res.status(404).end();
@@ -75,7 +74,6 @@ class TodoService{
             console.error(e)
             res.status(404).end()
         }
-
     }
 }
 const todoService = new TodoService()

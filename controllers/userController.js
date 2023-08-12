@@ -1,107 +1,47 @@
-import User from "../models/User.js";
-import userService from "../service/UserService.js";
-import bcrypt from "bcrypt";
-import UserDto from "../dto/userDto.js";
-import tokenService from "../service/TokenService.js";
-import path from 'path'
-import { Storage } from '@google-cloud/storage'
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import Verify from "../models/Verify.js";
 import jwt from "jsonwebtoken";
-import EmailService from "../service/emailService.js";
+import path, {dirname} from 'path'
+import {fileURLToPath} from 'url';
+import {Storage} from '@google-cloud/storage'
+
+import User from "../models/User.js";
+import Verify from "../models/Verify.js";
+
+import userService from "../service/UserService.js";
+import EmailService from "../service/EmailService.js";
+
+import UserService from "../service/UserService.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const credentialsPath = path.join(__dirname, '../sharp-gecko-393815-705b237df0fb.json');
+const credentialsPath = path.join(__dirname, process.env.PATH_TO_PROD_JSON);
 process.env.GOOGLE_APPLICATION_CREDENTIALS = credentialsPath;
 
-const storage = new Storage({ projectId: 'sharp-gecko-393815' });
-const bucketName = 'todos-backend-nodejs-storage';
-const bucket = storage.bucket(bucketName);
+const storage = new Storage({ projectId: process.env.PROD_PROJECT_ID })
+const bucketName = process.env.GOOGLE_BUCKET_NAME
+const bucket = storage.bucket(bucketName)
 
 class UserController{
-    async auth(req, res){
-        try {
-            const {login, password} = req.body
-            const user = await User.findOne({login, regType:'password'})
-            if(user){
-                if (await bcrypt.compare(password, user.password)){
-                    const {accessToken, refreshToken} = await tokenService.generate(user)
-                    user.session.push(
-                        {
-                            accessToken,
-                            refreshToken,
-                            logged_at: new Date()
-                        }
-                    )
-                    res.cookie('refreshToken', refreshToken, { maxAge: 1209600000, httpOnly: true });
-                    await user.save()
-                    return res.status(200).json(new UserDto(user, accessToken))
-                }
-            }
-            return res.status(404).send("Wrong login or password")
-        } catch (e) {
-            console.error(e)
-            return res.status(500).end()
-        }
-    }
-
-    async authWithService(req, res){
-        try {
-            const {login} = req.body
-            const user = await User.findOne({login, regType:'google'})
-            if(user){
-                const {accessToken, refreshToken} = await tokenService.generate(user)
-                user.session.push(
-                    {
-                        accessToken,
-                        refreshToken,
-                        logged_at: new Date()
-                    }
-                )
-                res.cookie('refreshToken', refreshToken, { maxAge: 1209600000, httpOnly: true });
-                await user.save()
-                return res.status(200).json(new UserDto(user, accessToken))
-            }
-            return res.status(404).send("Wrong login or password")
-        } catch (e) {
-            return res.status(500).end()
-        }
-    }
-
     async signUp(req, res){
         try {
-            const {userDto, refreshToken} = await userService.create(req.body)
-            if (userDto){
-                res.cookie('refreshToken', refreshToken, { maxAge: 1209600000, httpOnly: true });
-                return res.status(200).json(userDto)
-            }
-            return res.status(400).send("User already exists")
-        } catch (err) {
-            console.error(err);
-            return res.status(500).end();
+            const user = req.body
+            await userService.createUser(user, res)
+        } catch (e) {
+            console.error(e);
+            res.status(500).end();
         }
+        return res
     }
-
-    async addTag(req, res){
+    async auth(req, res){
         try {
-            const user_id = req.query.user_id
-            const name = req.query.tag
-            const id = req.query.id
-            const settings = req.body
-            const user = await User.findById(user_id)
-            if (!user) {
-                return res.status(404).end()
-            }
-            user.tags.push({name, id, settings})
-            user.save()
-            return res.status(200).end()
-        } catch (err) {
-            console.error(err);
-            return res.status(500).end()
+            const user = req.body
+            const regType = req.query.regType
+            await UserService.authUser(user, regType, res)
+        } catch (e) {
+            console.error(e)
+            res.status(500).end()
         }
+        return res
     }
 
     async addFavorite(req, res){
@@ -165,38 +105,6 @@ class UserController{
             return res.status(500).end();
         }
     }
-
-
-    async updateTag(req, res){
-        try {
-            const user_id = req.query.user_id
-            const name = req.query.tag
-            const id = req.query.id
-            const settings = req.body
-            const user = await User.findById(user_id)
-            if (!user) {
-                return res.status(404).end()
-            }
-            const index = user.tags.findIndex(obj => obj.id === id);
-            if (index === -1) {
-                return res.status(404).end();
-            }
-            const oldTag = user.tags[index];
-            const newTag = {name, settings};
-            for (let key in newTag) {
-                if (newTag[key] !== null && key !== "id") {
-                    oldTag[key] = newTag[key];
-                }
-            }
-            user.tags[index] = oldTag;
-            await user.save();
-            return res.status(200).end();
-        } catch (err) {
-            console.error(err);
-            return res.status(500).end();
-        }
-    }
-
     async deleteTag(req, res) {
         try {
             const user_id = req.query.user_id
@@ -382,7 +290,7 @@ class UserController{
 
     async getAvatar(req, res){
         try {
-            const nickname = req.params.nickname;
+            const nickname = req.query.nickname;
             const file = bucket.file(nickname + '_avatar');
 
 
@@ -409,7 +317,7 @@ class UserController{
             const emailToken = req.body.emailToken;
             const record = await Verify.findOne({emailToken})
             if (!record) return res.status(404).end()
-            jwt.verify(emailToken, process.env.emailSecretKey, async (err, decoded) => {
+            jwt.verify(emailToken, process.env.EMAIL_SECRET_KEY, async (err, decoded) => {
                 if (err) {
                     return res.status(404).end()
                 } else {

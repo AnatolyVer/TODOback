@@ -2,9 +2,7 @@ import { Router } from "express";
 import TodoController from "../controllers/todoController.js";
 import UserController from "../controllers/userController.js";
 
-import checkValidToken from "../validation/tokenValid.js";
-
-const router = Router()
+const userRouter = Router()
 
 import multer from 'multer'
 const upload = multer();
@@ -37,20 +35,22 @@ router.put('/mapping', TodoController.mapping)
 
 
 /*-------------------------- User -------------------------*/
-router.get('/get_avatar/:nickname', UserController.getAvatar)
-router.get('/get_verification_status', UserController.sendEmailVerifiedStatus)
 
-router.get('/checkTokenValid', checkValidToken, UserController.checkTokenValid)
+/*
+router.get('/checkTokenValid', checkValidToken, UserController.checkTokenValid)*/
 
-router.post('/auth', UserController.auth)
-router.post('/auth_with', UserController.authWithService)
-router.post('/sign_up', UserController.signUp)
+userRouter.post('/auth', UserController.auth)
+userRouter.post('/sign_up', UserController.signUp)
+userRouter.get('/get_avatar', UserController.getAvatar)
+userRouter.get('/get_verification_status', UserController.sendEmailVerifiedStatus)
 
-router.post('/confirm_email', UserController.confirmEmail)
-router.post('/resend_email', UserController.resendEmail)
+/*
+userRouter.post('/confirm_email', UserController.confirmEmail)
+userRouter.post('/resend_email', UserController.resendEmail)
+*/
 
 
 router.post('/set_avatar', upload.single('image'), UserController.setAvatar)
 
 
-export default router
+export default userRouter

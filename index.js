@@ -4,15 +4,17 @@ import cors from 'cors'
 import multer from 'multer'
 import cookieParser from 'cookie-parser'
 
-import router from './routing/index.js'
+import userRouter from './routing/user.js'
+import tagRouter from "./routing/tag.js";
+
 
 import * as dotenv from 'dotenv'
 
 /*-------------------------- SETTINGS -------------------------*/
 
-const PORT = process.env.PORT || 3000
+const app = express()
 
-/*-------------------------- SETTINGS -------------------------*/
+const PORT = process.env.PORT || 3000
 
 mongoose.set('strictQuery', true)
 dotenv.config()
@@ -21,7 +23,6 @@ mongoose
     .then(() => console.log("Successfully connected to DB")
     ).catch(() => console.log("Failed connection to DB"))
 
-const app = express()
 
 app.use(cookieParser('key'))
 app.use(express.json())
@@ -30,8 +31,9 @@ app.use(cors({
     credentials: true,
 }));
 app.use('/uploads', express.static('uploads'))
-app.use('/api', router)
 
+app.use('/user', userRouter)
+app.use('/tag', tagRouter)
 
 const storage = multer.diskStorage({
     destination:(_, __, cb) => {
@@ -47,7 +49,6 @@ const upload = multer({storage})
 app.post('/upload', upload.single('image'), (req, res) => {
     res.status(200)
 })
-
 
 /*-------------------------- RUNNING SERVER --------------------------*/
 

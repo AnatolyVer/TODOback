@@ -1,6 +1,6 @@
 import User from "../models/User.js"
 
-import TodoService from '../service/todoService.js'
+import TodoService from '../service/TodoService.js'
 class todoController{
     async createTodo(req, res){
         try {
@@ -26,9 +26,8 @@ class todoController{
     async updateTodo(req, res){
         try {
             const userId = req.query.user_id;
-            const oldTodoId = req.body.id;
             const newTodo = req.body;
-            await TodoService.updateTodo(userId, oldTodoId, newTodo, res)
+            await TodoService.updateTodo(userId, newTodo, res)
         } catch (e) {
             console.error(e);
             res.status(500).end();
@@ -37,7 +36,7 @@ class todoController{
     }
     async mapping(req, res){
         try {
-            const userId = req.query.userId
+            const userId = req.query.user_id
             const method = req.query.method
             const todosId = req.body
             await TodoService.mapping(userId, todosId, method, res)
