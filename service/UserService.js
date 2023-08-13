@@ -1,4 +1,7 @@
 import bcrypt from "bcrypt";
+import path, {dirname} from 'path'
+import {fileURLToPath} from 'url';
+import {Storage} from '@google-cloud/storage'
 
 import TokenService from "./TokenService.js";
 import EmailService from "./EmailService.js";
@@ -6,6 +9,15 @@ import EmailService from "./EmailService.js";
 import User from "../models/User.js";
 
 import UserDto from "../dto/userDto.js";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const credentialsPath = path.join(__dirname, process.env.PATH_TO_PROD_JSON);
+process.env.GOOGLE_APPLICATION_CREDENTIALS = credentialsPath;
+
+const storage = new Storage({ projectId: process.env.PROD_PROJECT_ID })
+const bucketName = process.env.GOOGLE_BUCKET_NAME
+const bucket = storage.bucket(bucketName)
 class UserService{
     async createUser(newUser, res){
         try{
@@ -55,6 +67,52 @@ class UserService{
             throw new Error(e)
         }
     }
+
+    async setAvatar(avatar, fileName, res){
+        try{
+            const gcsFile = bucket.file(fileName);
+
+            const stream = gcsFile.createWriteStream({
+                metadata: {
+                    contentType: avatar.mimetype,
+                },
+            });
+
+            stream.on('error', (err) => {
+                console.error('Ошибка при загрузке файла:', err);
+                next(err);
+            });
+
+            stream.on('finish', () => {
+                console.log('Файл успешно загружен на Google Cloud Storage.');
+                const avatar = this.#getAvatar(fileName)
+                res.status(200).end(avatar)
+            });
+            stream.end(avatar.buffer);
+        }catch (e) {
+            console.error(e)
+            res.status(400).end()
+        }
+    }
+
+    async #getAvatar(fileName){
+        try {
+            const currentDate = new Date();
+            const expiresDate = new Date(currentDate);
+            expiresDate.setFullYear(currentDate.getFullYear() + 1);
+
+            fileName.getSignedUrl({
+                action: 'read',
+                expires: expiresDate.toISOString(),
+            }, (err, url) => {
+                if (err) throw new Error('Error of getting url')
+                return url
+            });
+        } catch (e) {
+            throw new Error(e)
+        }
+    }
+
 }
 
 const userService = new UserService()
