@@ -39,13 +39,9 @@ class TagService{
             if (tagIndex === -1) throw new Error('Tag doesnt found')
             user.tags.splice(tagIndex, 1)
 
-            let index
-            do {
-                index = user.todos.findIndex(obj => obj.tags.id === tagId);
-                if (index > -1) {
-                    user.todos.splice(index, 1);
-                }
-            } while (index > -1);
+            for (const todo of user.todos) {
+               todo.tags = todo.tags.filter(tag => tag.id !== tagId)
+            }
 
             await user.save();
             res.status(200).end();
