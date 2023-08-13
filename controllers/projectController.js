@@ -63,20 +63,13 @@ class ProjectController{
 
     async getInboxID(req, res){
         try {
-            const user_id = req.query.user_id
-            const user = await User.findById(user_id)
-            if (!user) {
-                return res.status(404).end()
-            }
-            if (!(user.inboxID.length)){
-                user.inboxID = Date.now().toString()
-                await user.save()
-            }
-            return res.status(200).json(user.inboxID)
+            const userId = req.query.user_id
+            await ProjectService.getInboxID(userId, res)
         } catch (err) {
             console.error(err);
-            return res.status(500).end()
+            res.status(500).end()
         }
+        return res
     }
 }
 const projectController = new ProjectController()

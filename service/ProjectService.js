@@ -61,6 +61,16 @@ class ProjectService{
             res.status(404).end()
         }
     }
+
+    async getInboxID(userId, res){
+        try {
+            const user = await User.findById(userId)
+            res.status(200).json(user.inboxID)
+        }catch (e) {
+            console.error(e)
+            res.status(404).end()
+        }
+    }
 }
 const projectService = new ProjectService()
 export default projectService
