@@ -63,7 +63,7 @@ class TodoService{
                     user.todos = user.todos.filter(todo => !todosId.includes(todo.id));
                     break;
                 case 'complete':
-                    user.todos.forEach((todo, index) => {
+                    user.todos.map((todo, index) => {
                         if (todosId.includes(todo.id)) user.todos[index].done = true
                     });
                     break;
