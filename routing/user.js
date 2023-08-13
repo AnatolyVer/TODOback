@@ -9,7 +9,6 @@ const upload = multer();
 
 userRouter.post('/auth', UserController.auth)
 userRouter.post('/sign_up', UserController.signUp)
-userRouter.get('/get_avatar', UserController.getAvatar)
 userRouter.post('/set_avatar', upload.single('image'), UserController.setAvatar)
 
 userRouter.get('/get_verification_status', EmailController.sendEmailVerifiedStatus)
