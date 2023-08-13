@@ -17,23 +17,23 @@ class EmailController{
     async resendEmail(req, res){
         try {
             const {login} = req.query;
-            await EmailService.sendVerification(login)
-            return res.status(200).end()
+            await EmailService.sendVerification(login, res)
         } catch (err) {
             console.error(err);
-            return res.status(500).end()
+            res.status(500).end()
         }
+        return res
     }
 
     async sendEmailVerifiedStatus(req, res){
         try {
             const {login} = req.query;
-            const user = await User.findOne({login})
-            return res.status(200).json(user.emailIsVerified)
+            await EmailService.sendEmailVerifiedStatus(login, res)
         } catch (err) {
             console.error(err);
-            return res.status(500).end()
+            res.status(500).end()
         }
+        return res
     }
 }
 const emailController = new EmailController()

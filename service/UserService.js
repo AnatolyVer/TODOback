@@ -28,7 +28,7 @@ class UserService{
             const user = await User.create({login, password: hashedPassword, name, picture, inboxID:Date.now(), regType, emailIsVerified})
             const {accessToken, refreshToken} = await this.#createSession(user)
 
-            if (regType === 'password') await EmailService.sendVerification(login)
+            if (regType === 'password') await EmailService.sendVerification(login, res)
 
             res.cookie('refreshToken', refreshToken, { maxAge: 1209600000, httpOnly: true });
             const userDto = new UserDto(user, accessToken)

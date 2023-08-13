@@ -28,14 +28,16 @@ class EmailService{
             '<a href=\'http://localhost:5173/email_verification?token=' + token + '\'>Click me!</a>'
         )
     }
-    async sendVerification(email){
+    async sendVerification(email, res){
         try {
             await Verify.deleteOne({email});
             const emailToken = jwt.sign({email}, process.env.EMAIL_SECRET_KEY)
             await Verify.create({email,emailToken})
             this.#sendEmailConfirm(email, emailToken);
+            res.status(200).end()
         }catch (e){
             console.error(e)
+            res.status(404).end()
         }
     }
     async confirmEmail(emailToken, res){
@@ -74,6 +76,17 @@ class EmailService{
             }
         });
     }
+
+    async sendEmailVerifiedStatus(login, res){
+        try {
+            const user = await User.findOne({login})
+            res.status(200).json(user.emailIsVerified)
+        }catch (e){
+            console.error(e)
+            res.status(404).end()
+        }
+    }
+
 }
 const emailService = new EmailService()
 export default emailService
