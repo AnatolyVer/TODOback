@@ -64,11 +64,10 @@ class TodoService{
                     break;
                 case 'complete':
                     let temp = []
-                    user.todos.map((todo) => {
-                        if (todosId.includes(todo.id)) todo.done = true
-                        temp.push(todo)
+                    temp = user.todos.map(todo => {
+                        if (todosId.includes(todo.id)) todo.done = true;
+                        return todo
                     });
-                    console.log(temp)
                     user.todos = temp
                     break;
             }
