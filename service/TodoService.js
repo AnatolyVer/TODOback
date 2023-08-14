@@ -63,12 +63,13 @@ class TodoService{
                     user.todos = user.todos.filter(todo => !todosId.includes(todo.id));
                     break;
                 case 'complete':
-                    let temp = []
-                    user.todos.map((todo, index) => {
+                    user.todos = user.todos.filter(todo => !todosId.includes(todo.id));
+                    /*let temp = []
+                    user.todos.map((todo) => {
                         if (todosId.includes(todo.id)) todo.done = true
                         temp.push(todo)
                     });
-                    user.todos = temp
+                    user.todos = temp*/
                     break;
             }
             await user.save()
