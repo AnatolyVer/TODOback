@@ -4,7 +4,7 @@ class FavoriteService{
         try {
             const user = await User.findById(userId)
             user.favorites.push(favorite)
-            user.save()
+            await user.save()
             res.status(200).end()
         }catch (e){
             console.error(e)
