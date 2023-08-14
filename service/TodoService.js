@@ -68,7 +68,8 @@ class TodoService{
                         if (todosId.includes(todo.id)) todo.done = true
                         temp.push(todo)
                     });
-                    user.todos = []
+                    console.log(temp)
+                    user.todos = temp
                     break;
             }
             await user.save()
