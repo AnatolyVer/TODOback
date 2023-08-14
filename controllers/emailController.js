@@ -17,7 +17,8 @@ class EmailController{
     async resendEmail(req, res){
         try {
             const {login} = req.query;
-            await EmailService.sendVerification(login, res)
+            await EmailService.sendVerification(login)
+            res.status(200).end()
         } catch (err) {
             console.error(err);
             res.status(500).end()

@@ -27,10 +27,10 @@ class UserService{
             const emailIsVerified = regType === 'google'
             const user = await User.create({login, password: hashedPassword, name, picture, inboxID:Date.now(), regType, emailIsVerified})
             const {accessToken, refreshToken} = await this.#createSession(user)
+            res.cookie('refreshToken', refreshToken, { maxAge: 1209600000, httpOnly: true });
 
             if (regType === 'password') await EmailService.sendVerification(login, res)
 
-            res.cookie('refreshToken', refreshToken, { maxAge: 1209600000, httpOnly: true });
             const userDto = new UserDto(user, accessToken)
             res.status(200).json(userDto)
         }catch (e) {
