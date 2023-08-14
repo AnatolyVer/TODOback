@@ -68,7 +68,10 @@ class TodoService{
                         if (todosId.includes(todo.id)) todo.done = true;
                         return todo
                     });
-                    user.todos = temp
+                    const n = user.todos.length
+                    user.todos = [...temp, ...user.todos]
+                    await user.save()
+                    user.todos = user.todos.splice(n*-1)
                     break;
             }
             await user.save()
