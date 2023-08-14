@@ -65,7 +65,7 @@ class TodoService{
                 case 'complete':
                     let temp = []
                     user.todos.map((todo, index) => {
-                        if (todosId.includes(todo.id)) user.todos[index].done = true
+                        if (todosId.includes(todo.id)) todo.done = true
                         temp.push(todo)
                     });
                     user.todos = temp
