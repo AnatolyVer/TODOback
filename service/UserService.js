@@ -50,7 +50,9 @@ class UserService{
                 const userDto = new UserDto(user, accessToken)
                 res.status(200).json(userDto)
             }
-            res.status(404).send('Something went wrong')
+            else {
+                res.status(404).send('Something went wrong')
+            }
         }catch (e){
             console.error(e)
             res.status(404).send("Wrong data or user don't exist")
