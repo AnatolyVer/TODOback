@@ -88,36 +88,34 @@ class UserService{
                 next(err);
             });
 
-            stream.on('finish', () => {
+            stream.on('finish', async () => {
                 console.log('Файл успешно загружен на Google Cloud Storage.');
-                const avatar = this.#getAvatar(fileName)
-                res.status(200).end(avatar)
             });
             stream.end(avatar.buffer);
+            await this.#getAvatar(gcsFile, res)
         }catch (e) {
             console.error(e)
             res.status(400).end()
         }
     }
 
-    async #getAvatar(fileName){
+    async #getAvatar(fileName, res){
         try {
             const currentDate = new Date();
             const expiresDate = new Date(currentDate);
             expiresDate.setFullYear(currentDate.getFullYear() + 1);
 
-            fileName.getSignedUrl({
+            await fileName.getSignedUrl({
                 action: 'read',
                 expires: expiresDate.toISOString(),
             }, (err, url) => {
                 if (err) throw new Error('Error of getting url')
-                return url
+                res.status(400).send(url)
             });
         } catch (e) {
             throw new Error(e)
         }
     }
-
 }
 
 const userService = new UserService()
