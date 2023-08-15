@@ -110,7 +110,7 @@ class UserService{
                 expires: expiresDate.toISOString(),
             }, (err, url) => {
                 if (err) throw new Error('Error of getting url')
-                res.status(200).send(url + `&data=${currentDate.toISOString()}`)
+                res.status(200).send(url + `&data=${Date.now()}`)
             });
         } catch (e) {
             throw new Error(e)
