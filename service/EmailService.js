@@ -32,7 +32,7 @@ class EmailService{
         try {
             await Verify.deleteOne({email});
             const emailToken = jwt.sign({email}, process.env.EMAIL_SECRET_KEY)
-            await Verify.create({email,emailToken})
+            await Verify.create({email, emailToken})
             this.#sendEmailConfirm(email, emailToken);
         }catch (e){
             throw new Error(e)
@@ -59,7 +59,6 @@ class EmailService{
     }
 
     #sendEmailConfirm(to, token) {
-        console.log('options')
         const mailOptions = {
             from: process.env.EMAIL,
             to: to,
@@ -67,7 +66,6 @@ class EmailService{
             html:this.html(to, token)
         };
 
-        console.log('sending')
         this.transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
                 console.error(error);
