@@ -74,7 +74,7 @@ class EmailService{
 
     async sendEmailVerifiedStatus(login, res){
         try {
-            const user = await User.findOne({login})
+            const user = await User.findOne({login, regType: 'password'})
             res.status(200).json(user.emailIsVerified)
         }catch (e){
             console.error(e)
