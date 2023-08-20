@@ -13,12 +13,12 @@ const checkValidToken = async (req, res, next) => {
             if (currentSession)
             {
                 try {
-                    await jwt.verify(accessToken, process.env.accessSecretKey)
+                    await jwt.verify(accessToken, process.env.ACCESS_SECRET_KEY)
                     next();
                 }catch (e){
                     console.log('Access token has expired')
                     try {
-                        await jwt.verify(refreshToken, process.env.refreshSecretKey)
+                        await jwt.verify(refreshToken, process.env.REFRESH_SECRET_KEY)
                         {
                             const {accessToken, refreshToken} = await tokenService.generate(user)
                             user.session[currentSession] = {

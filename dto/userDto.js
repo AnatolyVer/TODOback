@@ -8,16 +8,16 @@ class userDto{
     picture
     regType
     emailIsVerified
-    constructor(obj) {
-        this.user_id = obj._id
-        this.todos = obj.todos
-        this.accessToken = obj.accessToken
-        this.login = obj.login
-        this.tags = obj.tags
-        this.name = obj.name
-        this.picture = obj.picture
-        this.regType = obj.regType
-        this.emailIsVerified = obj.emailIsVerified
+    constructor(user, accessToken) {
+        this.user_id = user._id
+        this.todos = user.todos
+        this.accessToken = accessToken
+        this.login = user.login
+        this.tags = user.tags
+        this.name = user.name
+        this.picture = user.picture
+        this.regType = user.regType
+        this.emailIsVerified = user.emailIsVerified
     }
 }
 

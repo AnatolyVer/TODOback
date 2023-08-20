@@ -1,18 +1,21 @@
 import express from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
-import multer from 'multer'
 import cookieParser from 'cookie-parser'
 
-import router from './routing/index.js'
+import userRouter from './routing/user.js'
+import tagRouter from "./routing/tag.js";
+import todoRouter from "./routing/todo.js";
+import favoriteRouter from "./routing/favorite.js";
 
 import * as dotenv from 'dotenv'
+import projectRouter from "./routing/project.js";
 
 /*-------------------------- SETTINGS -------------------------*/
+
+const app = express()
 
 const PORT = process.env.PORT || 3000
-
-/*-------------------------- SETTINGS -------------------------*/
 
 mongoose.set('strictQuery', true)
 dotenv.config()
@@ -21,7 +24,6 @@ mongoose
     .then(() => console.log("Successfully connected to DB")
     ).catch(() => console.log("Failed connection to DB"))
 
-const app = express()
 
 app.use(cookieParser('key'))
 app.use(express.json())
@@ -29,25 +31,14 @@ app.use(cors({
     origin: '*',
     credentials: true,
 }));
-app.use('/uploads', express.static('uploads'))
-app.use('/api', router)
 
+/*-------------------------- ROUTING --------------------------*/
 
-const storage = multer.diskStorage({
-    destination:(_, __, cb) => {
-        cb(null, 'uploads');
-    },
-    filename: (_, file, cb) => {
-        cb(null, `${file.originalname}.jpg`)
-    }
-})
-
-const upload = multer({storage})
-
-app.post('/upload', upload.single('image'), (req, res) => {
-    res.status(200)
-})
-
+app.use('/user', userRouter)
+app.use('/todo', todoRouter)
+app.use('/tag', tagRouter)
+app.use('/project', projectRouter)
+app.use('/favorite', favoriteRouter)
 
 /*-------------------------- RUNNING SERVER --------------------------*/
 
