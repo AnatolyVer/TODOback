@@ -13,18 +13,15 @@ class ProjectService{
             res.status(404).end()
         }
     }
-    async updateProject(userId, newProject, res){
+    async updateProject(id, newProject, res){
         try {
-            const user = await User.findById(userId)
-            const index = user.projects.findIndex(obj => obj.id === newProject.id)
-            const oldProject = user.projects[index];
+            const project = await Project.findById(id)
             for (let key in newProject) {
                 if (newProject[key] !== null && key !== "id") {
-                    oldProject[key] = newProject[key];
+                    project[key] = newProject[key];
                 }
             }
-            user.projects[index] = oldProject;
-            await user.save()
+            await project.save()
             res.status(200).end()
         }catch (e){
             console.error(e)

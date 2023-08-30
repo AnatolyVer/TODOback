@@ -1,5 +1,4 @@
 import ProjectService from "../service/ProjectService.js";
-import User from "../models/User.js";
 
 class ProjectController{
     async createProject(req, res){
@@ -16,9 +15,9 @@ class ProjectController{
 
     async updateProject(req, res){
         try {
-            const userId = req.query.user_id
+            const projectId = req.query.id
             const newProject = req.body
-            await ProjectService.updateProject(userId, newProject, res)
+            await ProjectService.updateProject(projectId, newProject, res)
         } catch (e) {
             console.error(e);
             res.status(500).end();
