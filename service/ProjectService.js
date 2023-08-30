@@ -1,10 +1,12 @@
 import User from "../models/User.js";
+import Project from "../models/Project.js";
 class ProjectService{
     async createProject(userId, project, res){
         try {
-            const user = await User.findById(userId)
-            user.projects.push(project)
-            await user.save()
+            const owner = await User.findById(userId)
+            const createdProject = await Project.create({...project, owner,})
+            owner.projects.push(createdProject._id)
+            await owner.save()
             res.status(200).end()
         }catch (e){
             console.error(e)

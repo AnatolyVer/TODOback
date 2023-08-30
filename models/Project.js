@@ -10,13 +10,20 @@ const projectSchema = new mongoose.Schema({
         ref: 'user',
         required:true
     },
-    members:[{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'user'
-    }],
+    members: {
+        type: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'user'
+        }],
+        default: []
+    },
     color:{
         type: Object,
         required:true
+    },
+    isPinned:{
+        type: Boolean,
+        default: false
     },
     todos: {
         type:[Object],
