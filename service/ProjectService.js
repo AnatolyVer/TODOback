@@ -53,11 +53,10 @@ class ProjectService{
             res.status(404).end()
         }
     }
-    async getProject(userId, id,  res){
+    async getProject(projectId,  res){
         try {
-            const user = await User.findById(userId)
-            const todos = user.todos.filter(obj => obj.projectId === id);
-            res.status(200).json(todos)
+            const project = await Project.findById(projectId)
+            res.status(200).json(project.todos)
         }catch (e) {
             console.error(e)
             res.status(404).end()
