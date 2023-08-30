@@ -31,14 +31,21 @@ class ProjectService{
             res.status(404).end()
         }
     }
-    async deleteProject(userId, id, res){
+    async deleteProject(userId, projectId, res){
         try {
-            const user = await User.findById(userId)
-            const tagIndex = user.projects.findIndex(obj => obj.id === id)
-            user.projects.splice(tagIndex, 1)
-            user.todos = user.todos.filter(obj => obj.projectId !== id)
-            await user.save()
-            res.status(200).json(user.todos)
+            const project = await Project.findById(projectId)
+            if (project.owner.toString() === userId){
+                const allMembers = [project.owner, ...project.members]
+                for (const member of allMembers){
+                    const user = await User.findById(member.toString())
+                    const projectIndex = user.projects.findIndex(id => id.toString() === projectId)
+                    user.projects.splice(projectIndex, 1)
+                    await user.save()
+                }
+                await Project.deleteOne({_id: projectId})
+                res.status(200).end("Deleted")
+            }
+            res.status(404).end()
         }catch (e){
             console.error(e)
             res.status(404).end()
