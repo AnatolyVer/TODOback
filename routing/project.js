@@ -3,7 +3,7 @@ import ProjectController from "../controllers/projectController.js";
 
 const projectRouter = Router()
 
-projectRouter.post('/add', ProjectController.addProject)
+projectRouter.post('/add', ProjectController.createProject)
 projectRouter.get('/get', ProjectController.getProject)
 projectRouter.get('/get_all', ProjectController.getProjects)
 projectRouter.put('/update', ProjectController.updateProject)

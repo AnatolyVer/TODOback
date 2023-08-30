@@ -24,7 +24,6 @@ mongoose
     .then(() => console.log("Successfully connected to DB")
     ).catch(() => console.log("Failed connection to DB"))
 
-
 app.use(cookieParser('key'))
 app.use(express.json())
 app.use(cors({

@@ -1,6 +1,6 @@
 import User from "../models/User.js";
 class ProjectService{
-    async addProject(userId, project, res){
+    async createProject(userId, project, res){
         try {
             const user = await User.findById(userId)
             user.projects.push(project)
