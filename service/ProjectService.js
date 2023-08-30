@@ -47,22 +47,19 @@ class ProjectService{
     async getProjects(userId, res){
         try {
             const user = await User.findById(userId)
-            res.status(200).json(user.projects)
+            const projects = []
+            for (const projectId of user.projects) {
+                const project = await Project.findById(projectId)
+                const projectObject = project.toObject();
+                delete projectObject.__v;
+                projects.push(projectObject);
+            }
+            res.status(200).json(projects)
         }catch (e) {
             console.error(e)
             res.status(404).end()
         }
     }
-    async getProject(projectId,  res){
-        try {
-            const project = await Project.findById(projectId)
-            res.status(200).json(project.todos)
-        }catch (e) {
-            console.error(e)
-            res.status(404).end()
-        }
-    }
-
     async getInboxID(userId, res){
         try {
             const user = await User.findById(userId)

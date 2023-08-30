@@ -49,17 +49,6 @@ class ProjectController{
         return res
     }
 
-    async getProject(req, res){
-        try {
-            const projectId = req.query.projectId
-            await ProjectService.getProject(projectId, res)
-        } catch (err) {
-            console.error(err);
-            res.status(500).end()
-        }
-        return res
-    }
-
     async getInboxID(req, res){
         try {
             const userId = req.query.user_id
