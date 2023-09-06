@@ -1,4 +1,8 @@
 import ProjectService from "../service/ProjectService.js";
+import jwt from "jsonwebtoken";
+import User from "../models/User.js";
+import Project from "../models/Project.js";
+import EmailService from "../service/EmailService.js";
 
 class ProjectController{
     async createProject(req, res){
@@ -57,6 +61,28 @@ class ProjectController{
             res.status(500).end()
         }
         return res
+    }
+
+    async sendInvite(req, res){
+        try {
+            await EmailService.sendInvite({...req.body}, res)
+        }catch (e) {
+            console.error(e)
+        }
+    }
+
+    async joinProject(req, res) {
+        try {
+            const projectId = req.body
+            const user = await User.findById(data.userId)
+            const project = await Project.findById(data.projectId)
+            user.projects.push(data.projectId)
+            project.members.push(data.userId)
+            res.status(200).end()
+        }catch (e){
+            console.error(e)
+            res.status(500).end()
+        }
     }
 }
 const projectController = new ProjectController()

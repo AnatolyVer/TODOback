@@ -11,7 +11,6 @@ const verifySchema = new mongoose.Schema({
         unique: true,
         required:true
     },
-
 });
 
 export default mongoose.model('verify', verifySchema)
