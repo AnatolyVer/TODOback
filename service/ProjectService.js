@@ -1,5 +1,6 @@
 import User from "../models/User.js";
 import Project from "../models/Project.js";
+import projectDto from "../dto/projectDto.js";
 
 class ProjectService{
     async createProject(userId, project, res){
@@ -57,7 +58,7 @@ class ProjectService{
                 const project = await Project.findById(projectId)
                 const projectObject = project.toObject();
                 delete projectObject.__v;
-                projects.push(projectObject);
+                projects.push(new projectDto(projectObject));
             }
             res.status(200).json(projects)
         }catch (e) {
