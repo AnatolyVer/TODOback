@@ -51,6 +51,7 @@ class EmailService{
     async sendInvite(email, projectId , res){
         try {
             this.#sendEmail(email, this.#htmlSendInvite(projectId), "Project Invite");
+            res.status(200).end()
         }catch (e){
             console.error(e)
             res.status(404).end()
@@ -72,9 +73,9 @@ class EmailService{
         }
     }
 
-    async sendEmailVerifiedStatus(login, res){
+    async sendEmailVerifiedStatus(userId, res){
         try {
-            const user = await User.findOne({login, regType: 'password'})
+            const user = await User.findById(user_id)
             res.status(200).json(user.emailIsVerified)
         }catch (e){
             console.error(e)

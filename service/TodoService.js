@@ -2,17 +2,20 @@ import User from "../models/User.js";
 import Project from "../models/Project.js";
 
 class TodoService{
+
+    //done for project-changes
     async addTodo(userId, todo, res){
         try {
             const user = await User.findById(userId)
-            if (todo.projectId === user.inboxID) user.todos.push({...todo, done:false})
-            else {
+            if (todo.projectId === user.inboxID){
+                user.todos.push({...todo, done:false})
+                await user.save()
+            }
+            else{
                 const project = await Project.findById(todo.projectId)
-                console.log(project)
-                project.todos.push(todo)
+                project.todos.push({...todo, done:false})
                 await project.save()
             }
-            await user.save()
             res.status(200).end()
         }catch (e){
             console.error(e)
@@ -21,13 +24,14 @@ class TodoService{
     }
     async getSortedTodos(userId, res){
         try {
-            let todos = []
             const user = await User.findById(userId)
-            todos = [...user.todos]
+            let todos = [...user.todos]
+
             for (const project of user.projects){
                 const curProject = await Project.findById(project)
                 todos = [...todos, ...curProject.todos]
             }
+
             todos.sort((a, b) => a.priority.localeCompare(b.priority))
             res.status(200).json(todos)
         }catch (e) {
@@ -38,16 +42,31 @@ class TodoService{
     async updateTodo(userId, newTodo, res){
         try {
             const user = await User.findById(userId);
-            const index = user.todos.findIndex(obj => obj.id === newTodo.id);
-            if (index === -1) throw new Error('Todo not found')
-            const oldTodo = user.todos[index];
-            for (let key in newTodo) {
-                if (newTodo[key] !== null && key !== "id") {
-                    oldTodo[key] = newTodo[key];
+            if (newTodo.projectId === user.inboxID){
+                const index = user.todos.findIndex(obj => obj.id === newTodo.id);
+                if (index === -1) throw new Error('Todo not found')
+                const oldTodo = user.todos[index];
+                for (let key in newTodo) {
+                    if (newTodo[key] !== null && key !== "id") {
+                        oldTodo[key] = newTodo[key];
+                    }
                 }
+                user.todos[index] = oldTodo;
+                await user.save()
             }
-            user.todos[index] = oldTodo;
-            await user.save()
+            else {
+                const project = await Project.findById(newTodo.projectId)
+                const index = project.todos.findIndex(obj => obj.id === newTodo.id);
+                if (index === -1) throw new Error('Todo not found')
+                const oldTodo = project.todos[index];
+                for (let key in newTodo) {
+                    if (newTodo[key] !== null && key !== "id") {
+                        oldTodo[key] = newTodo[key];
+                    }
+                }
+                project.todos[index] = oldTodo;
+                await project.save()
+            }
             res.status(200).end();
         }catch (e) {
             console.error(e)

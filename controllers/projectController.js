@@ -65,7 +65,17 @@ class ProjectController{
 
     async sendInvite(req, res){
         try {
-            await EmailService.sendInvite({...req.body}, res)
+            const {email, projectId} = req.body
+            const user = await User.findOne({login: email})
+            const project = await Project.findById(projectId)
+            user.projects.push(projectId)
+            project.members.push({
+                id:user._id,
+                status:"member"
+            })
+            await user.save()
+            await project.save()
+            await EmailService.sendInvite(email, projectId, res)
         }catch (e) {
             console.error(e)
         }

@@ -67,7 +67,6 @@ wss.on('connection', (socket, req) => {
     });
 });
 
-
 server.listen(PORT, (err) => {
     if (err) console.log("Server doesn't work")
     else console.log(`Server started at port ${PORT}`)

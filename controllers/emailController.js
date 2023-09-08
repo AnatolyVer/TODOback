@@ -28,8 +28,8 @@ class EmailController{
 
     async sendEmailVerifiedStatus(req, res){
         try {
-            const {login} = req.query;
-            await EmailService.sendEmailVerifiedStatus(login, res)
+            const {user_id} = req.query;
+            await EmailService.sendEmailVerifiedStatus(user_id, res)
         } catch (err) {
             console.error(err);
             res.status(500).end()
