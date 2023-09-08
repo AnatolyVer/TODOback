@@ -75,7 +75,7 @@ class EmailService{
 
     async sendEmailVerifiedStatus(userId, res){
         try {
-            const user = await User.findById(user_id)
+            const user = await User.findById(userId)
             res.status(200).json(user.emailIsVerified)
         }catch (e){
             console.error(e)

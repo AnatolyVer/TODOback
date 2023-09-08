@@ -65,8 +65,8 @@ class ProjectController{
 
     async sendInvite(req, res){
         try {
-            const {email, projectId} = req.body
-            const user = await User.findOne({login: email})
+            const {email, regType, projectId} = req.body
+            const user = await User.findOne({login: email, regType})
             const project = await Project.findById(projectId)
             user.projects.push(projectId)
             project.members.push({
@@ -78,21 +78,26 @@ class ProjectController{
             await EmailService.sendInvite(email, projectId, res)
         }catch (e) {
             console.error(e)
+            res.status(500).end()
         }
+        return res
     }
 
-    async joinProject(req, res) {
+    async getAllMembers(req, res) {
         try {
-            const projectId = req.body
-            const user = await User.findById(data.userId)
-            const project = await Project.findById(data.projectId)
-            user.projects.push(data.projectId)
-            project.members.push(data.userId)
-            res.status(200).end()
+            const {projectId} = req.query
+            const project = await Project.findById(projectId)
+            let users = []
+            for (const member of project.members){
+                const {picture, login} = await User.findById(member.id)
+                users.push({picture, login, role:member.status})
+            }
+            res.status(200).json(users)
         }catch (e){
             console.error(e)
             res.status(500).end()
         }
+        return res
     }
 }
 const projectController = new ProjectController()

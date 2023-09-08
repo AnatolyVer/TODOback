@@ -5,10 +5,13 @@ const projectRouter = Router()
 
 projectRouter.get('/get_inboxID', ProjectController.getInboxID)
 projectRouter.get('/get_all', ProjectController.getProjects)
+
+projectRouter.get('/get_all_members', ProjectController.getAllMembers)
+
+
 projectRouter.post('/create', ProjectController.createProject)
 
 projectRouter.post('/send_invite', ProjectController.sendInvite)
-projectRouter.post('/join_project', ProjectController.joinProject)
 
 
 projectRouter.put('/update', ProjectController.updateProject)
