@@ -6,8 +6,12 @@ class ProjectService{
     async createProject(userId, project, res){
         try {
             const owner = await User.findById(userId)
-            const createdProject = await Project.create({...project, owner,})
-            owner.projects.push(createdProject._id)
+            const members = [{
+                id: userId,
+                status: 'owner'
+            }]
+            const createdProject = await Project.create({...project, members})
+            owner.projects.push(createdProject._id.toString())
             await owner.save()
             res.status(200).end()
         }catch (e){
@@ -33,15 +37,14 @@ class ProjectService{
     async deleteProject(userId, projectId, res){
         try {
             const project = await Project.findById(projectId)
-            if (project.owner.toString() === userId){
-                const allMembers = [project.owner, ...project.members]
-                for (const member of allMembers){
-                    const user = await User.findById(member.toString())
-                    const projectIndex = user.projects.findIndex(id => id.toString() === projectId)
+            if (project.members[0].id === userId){
+                for (const member of project.members){
+                    const user = await User.findById(member.id)
+                    const projectIndex = user.projects.findIndex(id => id === projectId)
                     user.projects.splice(projectIndex, 1)
                     await user.save()
                 }
-                await Project.deleteOne({_id: projectId})
+                await project.delete()
                 res.status(200).end("Deleted")
             }
             res.status(404).end()

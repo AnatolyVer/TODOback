@@ -1,10 +1,17 @@
 import User from "../models/User.js";
+import Project from "../models/Project.js";
 
 class TodoService{
     async addTodo(userId, todo, res){
         try {
             const user = await User.findById(userId)
-            user.todos.push({...todo, done:false})
+            if (todo.projectId === user.inboxID) user.todos.push({...todo, done:false})
+            else {
+                const project = await Project.findById(todo.projectId)
+                console.log(project)
+                project.todos.push(todo)
+                await project.save()
+            }
             await user.save()
             res.status(200).end()
         }catch (e){
@@ -14,10 +21,15 @@ class TodoService{
     }
     async getSortedTodos(userId, res){
         try {
+            let todos = []
             const user = await User.findById(userId)
-            user.todos.sort((a, b) => a.priority.localeCompare(b.priority))
-            await user.save()
-            res.status(200).json(user.todos)
+            todos = [...user.todos]
+            for (const project of user.projects){
+                const curProject = await Project.findById(project)
+                todos = [...todos, ...curProject.todos]
+            }
+            todos.sort((a, b) => a.priority.localeCompare(b.priority))
+            res.status(200).json(todos)
         }catch (e) {
             console.error(e)
             res.status(404).end()

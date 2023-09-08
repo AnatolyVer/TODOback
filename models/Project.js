@@ -5,17 +5,9 @@ const projectSchema = new mongoose.Schema({
         type: String,
         required:true
     },
-    owner:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'user',
-        required:true
-    },
     members: {
-        type: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'user'
-        }],
-        default: []
+        type: [Object],
+        required:true
     },
     color:{
         type: Object,
@@ -29,6 +21,10 @@ const projectSchema = new mongoose.Schema({
         type:[Object],
         default: []
     },
+    shared: {
+        type: Boolean,
+        default: false
+    }
 });
 
 export default mongoose.model('project', projectSchema)
