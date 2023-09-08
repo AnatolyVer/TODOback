@@ -89,8 +89,8 @@ class ProjectController{
             const project = await Project.findById(projectId)
             let users = []
             for (const member of project.members){
-                const {picture, login} = await User.findById(member.id)
-                users.push({picture, login, role:member.status})
+                const {picture, login, name} = await User.findById(member.id)
+                users.push({picture, login, name, role:member.status})
             }
             res.status(200).json(users)
         }catch (e){
