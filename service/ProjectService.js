@@ -13,7 +13,7 @@ class ProjectService{
             const createdProject = await Project.create({...project, members})
             owner.projects.push(createdProject._id.toString())
             await owner.save()
-            res.status(200).end()
+            res.status(200).json(new projectDto(createdProject))
         }catch (e){
             console.error(e)
             res.status(404).end()
