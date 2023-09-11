@@ -22,7 +22,7 @@ const projectSchema = new mongoose.Schema({
         default: []
     },
     shared: {
-        type: 'public' | "private",
+        type: String,
         default: 'private'
     }
 });
