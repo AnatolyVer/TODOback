@@ -37,6 +37,7 @@ class ProjectService{
     async deleteProject(userId, projectId, res){
         try {
             const project = await Project.findById(projectId)
+            const todos = project.todos
             if (project.members[0].id === userId){
                 for (const member of project.members){
                     const user = await User.findById(member.id)
@@ -45,7 +46,7 @@ class ProjectService{
                     await user.save()
                 }
                 await project.delete()
-                res.status(200).end("Deleted")
+                res.status(200).json(todos)
             }
             res.status(404).end()
         }catch (e){
