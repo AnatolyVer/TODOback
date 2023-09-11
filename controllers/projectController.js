@@ -19,9 +19,8 @@ class ProjectController{
 
     async updateProject(req, res){
         try {
-            const projectId = req.query.id
             const newProject = req.body
-            await ProjectService.updateProject(projectId, newProject, res)
+            await ProjectService.updateProject(newProject, res)
         } catch (e) {
             console.error(e);
             res.status(500).end();

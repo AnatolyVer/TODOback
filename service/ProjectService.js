@@ -19,9 +19,9 @@ class ProjectService{
             res.status(404).end()
         }
     }
-    async updateProject(id, newProject, res){
+    async updateProject(newProject, res){
         try {
-            const project = await Project.findById(id)
+            const project = await Project.findById(newProject.id)
             for (let key in newProject) {
                 if (newProject[key] !== null && key !== "id") {
                     project[key] = newProject[key];
