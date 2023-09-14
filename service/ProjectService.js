@@ -79,6 +79,16 @@ class ProjectService{
             res.status(404).end()
         }
     }
+
+    async getProject(projectId, res) {
+        try {
+            const project = await Project.findById(projectId)
+            res.status(200).json(new projectDto(project))
+        }catch (e) {
+            console.error(e)
+            res.status(404).end()
+        }
+    }
 }
 const projectService = new ProjectService()
 export default projectService

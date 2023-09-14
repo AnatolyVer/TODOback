@@ -98,6 +98,17 @@ class ProjectController{
         }
         return res
     }
+
+    async getProject(req, res) {
+        try {
+            const projectId = req.query.id
+            await ProjectService.getProject(projectId, res)
+        } catch (err) {
+            console.error(err);
+            res.status(500).end()
+        }
+        return res
+    }
 }
 const projectController = new ProjectController()
 export default projectController

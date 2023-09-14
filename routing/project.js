@@ -5,6 +5,7 @@ const projectRouter = Router()
 
 projectRouter.get('/get_inboxID', ProjectController.getInboxID)
 projectRouter.get('/get_all', ProjectController.getProjects)
+projectRouter.get('/get', ProjectController.getProject)
 
 projectRouter.get('/get_all_members', ProjectController.getAllMembers)
 
