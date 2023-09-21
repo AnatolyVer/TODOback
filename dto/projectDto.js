@@ -14,7 +14,6 @@ class projectDto{
         this.isPinned = project.isPinned
         this.todos = project.todos
         this.shared = project.shared
-
     }
 }
 

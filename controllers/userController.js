@@ -1,6 +1,6 @@
 import UserService from "../service/UserService.js";
-import Project from "../models/Project.js";
 import User from "../models/User.js";
+import Project from "../models/Project.js";
 class UserController{
     async signUp(req, res){
         try {
@@ -38,12 +38,16 @@ class UserController{
 
     async getUsers(req, res) {
         try {
-            const regex = new RegExp(req.query.login, 'i');
+            const {projectId, login} = req.query
+            const regex = new RegExp(login, 'i');
             const DTO = []
+            const project = await Project.findById(projectId)
             const users = await User.find({login:regex})
             for(const user of users) {
-                const {login, picture, regType, name} = user
-                DTO.push({login, picture, regType, name})
+                if (!project.members.some(member => member.id === user.id)){
+                    const {login, picture, regType, name} = user
+                    DTO.push({login, picture, regType, name})
+                }
             }
             res.status(200).json(DTO.slice(0, 10))
         }catch (e) {
