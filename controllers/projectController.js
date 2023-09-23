@@ -109,6 +109,26 @@ class ProjectController{
         }
         return res
     }
+
+    async addUser(req, res) {
+        try {
+            const {projectId, userId} = req.params
+            const project = await Project.findById(projectId)
+            const user = await User.findById(userId)
+            user.projects.push(projectId)
+            project.members.push({
+                id:userId,
+                status:"member"
+            })
+            project.save()
+            user.save()
+            res.status(200).end()
+        }catch (e) {
+            console.error(e)
+            res.status(500).end()
+        }
+        return res
+    }
 }
 const projectController = new ProjectController()
 export default projectController

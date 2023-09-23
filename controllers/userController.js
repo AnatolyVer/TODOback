@@ -44,7 +44,8 @@ class UserController{
             const project = await Project.findById(projectId)
             const users = await User.find({login:regex})
             for(const user of users) {
-                if (!project.members.some(member => member.id === user.id)){
+                const exist = project.members.some(member => member.id === user.id)
+                if (!exist){
                     const {login, picture, regType, name} = user
                     DTO.push({login, picture, regType, name})
                 }
