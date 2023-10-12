@@ -2,13 +2,11 @@ import express from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
-import {WebSocketServer} from 'ws'
-
 import userRouter from './routing/user.js'
 import tagRouter from "./routing/tag.js";
 import todoRouter from "./routing/todo.js";
 import favoriteRouter from "./routing/favorite.js";
-
+import WebSocketManager from './WebSocket.js';
 import * as dotenv from 'dotenv'
 import projectRouter from "./routing/project.js";
 import http from "http";
@@ -17,8 +15,6 @@ import http from "http";
 
 const app = express()
 const server = http.createServer(app);
-const wss = new WebSocketServer({ server });
-const client = {}
 const PORT = process.env.PORT || 3000
 
 mongoose.set('strictQuery', true)
@@ -45,27 +41,7 @@ app.use('/favorite', favoriteRouter)
 
 /*-------------------------- RUNNING SERVER --------------------------*/
 
-wss.on('connection', (socket, req) => {
-    console.log('Новое подключение к серверу сокетов');
-    const userId = req.url.substr(1);
-    client[userId] = socket
-
-    socket.on('message', (message) => {
-        console.log(`Получено сообщение: ${message}`);
-        const obj = JSON.parse(message)
-        obj.data.project = "changed"
-        socket.send(JSON.stringify(obj));
-    });
-
-    socket.on('close', () => {
-        for (let key in client) {
-            if (client.hasOwnProperty(key) && client[key] === socket) {
-                delete client[key];
-            }
-        }
-        console.log('Соединение закрыто');
-    });
-});
+new WebSocketManager(server);
 
 server.listen(PORT, (err) => {
     if (err) console.log("Server doesn't work")
