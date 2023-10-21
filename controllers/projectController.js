@@ -1,5 +1,4 @@
 import ProjectService from "../service/ProjectService.js";
-import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import Project from "../models/Project.js";
 import EmailService from "../service/EmailService.js";
@@ -21,9 +20,10 @@ class ProjectController{
         try {
             const newProject = req.body
             await ProjectService.updateProject(newProject, res)
+            res.status(200).end();
         } catch (e) {
             console.error(e);
-            res.status(500).end();
+            res.status(404).end();
         }
         return res
     }
@@ -31,11 +31,12 @@ class ProjectController{
     async deleteProject(req, res) {
         try {
             const userId = req.query.user_id
-            const id = req.query.id
-            await ProjectService.deleteProject(userId, id, res)
+            const projectId = req.query.id
+            await ProjectService.deleteProject(userId, projectId)
+            res.status(200).end()
         } catch (err) {
             console.error(err);
-            res.status(500).end();
+            res.status(404).end();
         }
         return res
     }

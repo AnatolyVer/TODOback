@@ -19,7 +19,43 @@ class ProjectService{
             res.status(404).end()
         }
     }
-    async updateProject(newProject, res){
+    async addTodo(projectId, todo){
+        try {
+            const project = await Project.findById(todo.projectId)
+            project.todos.push({...todo, done:false})
+            await project.save()
+        }catch (e) {
+            throw new Error(e.message)
+        }
+    }
+
+    async deleteTodo(projectId, todoId){
+        try {
+            const project = await Project.findById(projectId)
+            project.todos = project.todos.filter(obj => obj.id !== todoId);
+            await project.save()
+        }catch (e) {
+            console.error(e)
+        }
+    }
+
+    async updateTodo(projectId, newTodo) {
+        try {
+            const project = await Project.findById(newTodo.projectId)
+            const oldTodo = project.todos.filter(obj => obj.id === newTodo.id);
+            if (oldTodo) throw new Error('Todo not found')
+            for (let key in newTodo) {
+                if (newTodo[key] !== null && key !== "id") {
+                    oldTodo[key] = newTodo[key];
+                }
+            }
+            await project.save()
+        }catch (e) {
+            throw new Error(e.message)
+        }
+    }
+
+    async updateProject(newProject){
         try {
             const project = await Project.findById(newProject.id)
             for (let key in newProject) {
@@ -28,30 +64,24 @@ class ProjectService{
                 }
             }
             await project.save()
-            res.status(200).end()
         }catch (e){
-            console.error(e)
-            res.status(404).end()
+            throw new Error(e.message)
         }
     }
-    async deleteProject(userId, projectId, res){
+    async deleteProject(userId, projectId){
         try {
             const project = await Project.findById(projectId)
-            const todos = project.todos
             if (project.members[0].id === userId){
                 for (const member of project.members){
                     const user = await User.findById(member.id)
-                    const projectIndex = user.projects.findIndex(id => id === projectId)
-                    user.projects.splice(projectIndex, 1)
+                    user.projects = user.projects.filter(id => id !== projectId)
                     await user.save()
                 }
                 await project.delete()
-                res.status(200).json(todos)
             }
-            res.status(404).end()
+            throw new Error("No rights")
         }catch (e){
-            console.error(e)
-            res.status(404).end()
+            throw new Error(e.message)
         }
     }
     async getProjects(userId, res){
@@ -87,6 +117,15 @@ class ProjectService{
         }catch (e) {
             console.error(e)
             res.status(404).end()
+        }
+    }
+
+    async getUserProjectsID(userID){
+        try {
+            const user = await User.findById(userID)
+            return user.projects
+        }catch (e){
+            console.error(e)
         }
     }
 }
