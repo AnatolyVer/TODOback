@@ -3,7 +3,7 @@ import Project from "../models/Project.js";
 import projectDto from "../dto/projectDto.js";
 
 class ProjectService{
-    async createProject(userId, project, res){
+    async createProject(userId, project){
         try {
             const owner = await User.findById(userId)
             const members = [{
@@ -13,10 +13,9 @@ class ProjectService{
             const createdProject = await Project.create({...project, members})
             owner.projects.push(createdProject._id.toString())
             await owner.save()
-            res.status(200).json(new projectDto(createdProject))
+            return new projectDto(createdProject)
         }catch (e){
-            console.error(e)
-            res.status(404).end()
+            throw new Error(e.message)
         }
     }
     async addTodo(projectId, todo){
@@ -84,42 +83,36 @@ class ProjectService{
             throw new Error(e.message)
         }
     }
-    async getProjects(userId, res){
+    async getProjects(userId){
         try {
             const user = await User.findById(userId)
             const projects = []
             for (const projectId of user.projects) {
                 const project = await Project.findById(projectId)
-                const projectObject = project.toObject();
-                delete projectObject.__v;
-                projects.push(new projectDto(projectObject));
+                projects.push(new projectDto(project));
             }
-            res.status(200).json(projects)
+            return projects
         }catch (e) {
-            console.error(e)
-            res.status(404).end()
+            throw new Error(e.message)
         }
     }
-    async getInboxID(userId, res){
+    async getInboxID(userId){
         try {
             const user = await User.findById(userId)
-            res.status(200).json(user.inboxID)
+            return user.inboxID
         }catch (e) {
-            console.error(e)
-            res.status(404).end()
+            throw new Error(e.message)
         }
     }
 
-    async getProject(projectId, res) {
+    async getProject(projectId) {
         try {
             const project = await Project.findById(projectId)
-            res.status(200).json(new projectDto(project))
+            return new projectDto(project)
         }catch (e) {
-            console.error(e)
-            res.status(404).end()
+            throw new Error(e.message)
         }
     }
-
     async getUserProjectsID(userID){
         try {
             const user = await User.findById(userID)
@@ -128,6 +121,20 @@ class ProjectService{
             console.error(e)
         }
     }
+    async getAllMembers(projectId){
+        try {
+            const project = await Project.findById(projectId)
+            let users = []
+            for (const member of project.members){
+                const {picture, login, name} = await User.findById(member.id)
+                users.push({picture, login, name, role:member.status})
+            }
+            return users
+        }catch (e) {
+            throw new Error(e.message)
+        }
+    }
+
 }
 const projectService = new ProjectService()
 export default projectService

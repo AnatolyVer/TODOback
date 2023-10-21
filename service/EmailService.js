@@ -48,13 +48,11 @@ class EmailService{
         }
     }
 
-    async sendInvite(email, projectId , res){
+    async sendInvite(email, projectId){
         try {
             this.#sendEmail(email, this.#htmlSendInvite(projectId), "Project Invite");
-            res.status(200).end()
         }catch (e){
-            console.error(e)
-            res.status(404).end()
+            throw new Error(e.message)
         }
     }
 

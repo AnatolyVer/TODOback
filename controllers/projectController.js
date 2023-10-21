@@ -2,16 +2,18 @@ import ProjectService from "../service/ProjectService.js";
 import User from "../models/User.js";
 import Project from "../models/Project.js";
 import EmailService from "../service/EmailService.js";
+import projectDto from "../dto/projectDto.js";
 
 class ProjectController{
     async createProject(req, res){
         try {
             const userId = req.query.user_id
             const project = req.body
-            await ProjectService.createProject(userId, project, res)
+            const newProject = await ProjectService.createProject(userId, project)
+            res.status(200).json(newProject)
         } catch (e) {
             console.error(e);
-            res.status(500).end()
+            res.status(404).end()
         }
         return res
     }
@@ -44,10 +46,11 @@ class ProjectController{
     async getProjects(req, res){
         try {
             const userId = req.query.user_id
-            await ProjectService.getProjects(userId, res)
+            const projects = await ProjectService.getProjects(userId)
+            res.status(200).json(projects)
         } catch (err) {
             console.error(err);
-            res.status(500).end()
+            res.status(404).end()
         }
         return res
     }
@@ -55,10 +58,11 @@ class ProjectController{
     async getInboxID(req, res){
         try {
             const userId = req.query.user_id
-            await ProjectService.getInboxID(userId, res)
+            const inboxID = await ProjectService.getInboxID(userId, res)
+            res.status(200).json(inboxID)
         } catch (err) {
             console.error(err);
-            res.status(500).end()
+            res.status(404).end()
         }
         return res
     }
@@ -75,10 +79,10 @@ class ProjectController{
             })
             await user.save()
             await project.save()
-            await EmailService.sendInvite(email, projectId, res)
+            await EmailService.sendInvite(email, projectId)
         }catch (e) {
             console.error(e)
-            res.status(500).end()
+            res.status(404).end()
         }
         return res
     }
@@ -86,47 +90,44 @@ class ProjectController{
     async getAllMembers(req, res) {
         try {
             const {projectId} = req.query
-            const project = await Project.findById(projectId)
-            let users = []
-            for (const member of project.members){
-                const {picture, login, name} = await User.findById(member.id)
-                users.push({picture, login, name, role:member.status})
-            }
+            const users = await ProjectService.getAllMembers(projectId)
             res.status(200).json(users)
         }catch (e){
             console.error(e)
-            res.status(500).end()
+            res.status(404).end()
         }
         return res
     }
-
     async getProject(req, res) {
         try {
             const projectId = req.query.id
-            await ProjectService.getProject(projectId, res)
+            const project = await ProjectService.getProject(projectId, res)
+            res.status(200).json(project)
         } catch (err) {
             console.error(err);
-            res.status(500).end()
+            res.status(404).end()
         }
         return res
     }
-
     async addUser(req, res) {
         try {
             const {projectId, userId} = req.params
+
             const project = await Project.findById(projectId)
             const user = await User.findById(userId)
+
             user.projects.push(projectId)
+
             project.members.push({
                 id:userId,
                 status:"member"
             })
-            project.save()
-            user.save()
+            await project.save()
+            await user.save()
             res.status(200).end()
         }catch (e) {
             console.error(e)
-            res.status(500).end()
+            res.status(404).end()
         }
         return res
     }
