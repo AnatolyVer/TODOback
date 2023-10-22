@@ -2,7 +2,6 @@ import ProjectService from "../service/ProjectService.js";
 import User from "../models/User.js";
 import Project from "../models/Project.js";
 import EmailService from "../service/EmailService.js";
-import projectDto from "../dto/projectDto.js";
 
 class ProjectController{
     async createProject(req, res){

@@ -34,26 +34,32 @@ class WebSocketManager {
         socket.on(EVENT_MESSAGE, async message => {
             const {type, payload} = JSON.parse(message)
             const projectId = payload.projectId
-            switch (type) {
-                case ADD_TODO:
-                    await ProjectService.addTodo(projectId, payload)
-                    break;
-                case DELETE_TODO:
-                    await ProjectService.deleteTodo(projectId, payload)
-                    break;
-                case UPDATE_TODO:
-                    await ProjectService.updateTodo(projectId, payload)
-                    break;
-                case DELETE_PROJECT:
-                    const userId = this.getClientIDBySocket(socket)
-                    await ProjectService.deleteProject(userId, projectId)
-                    break;
-                case UPDATE_PROJECT:
-                    await ProjectService.updateProject(payload)
-                    break;
+            try {
+                switch (type) {
+                    case ADD_TODO:
+                        await ProjectService.addTodo(projectId, payload)
+                        break;
+                    case DELETE_TODO:
+                        await ProjectService.deleteTodo(projectId, payload)
+                        break;
+                    case UPDATE_TODO:
+                        const {id, data} = payload
+                        const newTodo = {projectId, id, ...data}
+                        await ProjectService.updateTodo(projectId, newTodo)
+                        break;
+                    case DELETE_PROJECT:
+                        const userId = this.getClientIDBySocket(socket)
+                        await ProjectService.deleteProject(userId, projectId)
+                        break;
+                    case UPDATE_PROJECT:
+                        await ProjectService.updateProject(payload)
+                        break;
+                }
+            }catch (e) {
+                console.error(e)
             }
 
-            this.sendMessageToRoom(socket, projectId, message);
+            this.sendMessageToRoom(socket, projectId, JSON.stringify({type, payload}));
         });
 
         socket.on(EVENT_CLOSE, () => {

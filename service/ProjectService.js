@@ -41,13 +41,15 @@ class ProjectService{
     async updateTodo(projectId, newTodo) {
         try {
             const project = await Project.findById(newTodo.projectId)
-            const oldTodo = project.todos.filter(obj => obj.id === newTodo.id);
-            if (oldTodo) throw new Error('Todo not found')
+            const index = project.todos.findIndex(obj => obj.id === newTodo.id);
+            if (index === -1) throw new Error('Todo not found')
+            const oldTodo = project.todos[index]
             for (let key in newTodo) {
-                if (newTodo[key] !== null && key !== "id") {
+                if (newTodo[key] !== null && key !== "id" && key !== "projectId") {
                     oldTodo[key] = newTodo[key];
                 }
             }
+            project.todos[index] = oldTodo
             await project.save()
         }catch (e) {
             throw new Error(e.message)
