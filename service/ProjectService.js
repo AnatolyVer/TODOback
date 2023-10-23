@@ -18,10 +18,10 @@ class ProjectService{
             throw new Error(e.message)
         }
     }
-    async addTodo(projectId, todo){
+    async addTodo(newTodo){
         try {
-            const project = await Project.findById(todo.projectId)
-            project.todos.push({...todo, done:false})
+            const project = await Project.findById(newTodo.projectId)
+            project.todos.push({...newTodo, done:false})
             await project.save()
         }catch (e) {
             throw new Error(e.message)
@@ -38,15 +38,15 @@ class ProjectService{
         }
     }
 
-    async updateTodo(projectId, newTodo) {
+    async updateTodo(updatedTodo) {
         try {
-            const project = await Project.findById(newTodo.projectId)
-            const index = project.todos.findIndex(obj => obj.id === newTodo.id);
+            const project = await Project.findById(updatedTodo.projectId)
+            const index = project.todos.findIndex(obj => obj.id === updatedTodo.id);
             if (index === -1) throw new Error('Todo not found')
             const oldTodo = project.todos[index]
-            for (let key in newTodo) {
-                if (newTodo[key] !== null && key !== "id" && key !== "projectId") {
-                    oldTodo[key] = newTodo[key];
+            for (let key in updatedTodo) {
+                if (updatedTodo[key] !== null && key !== "id" && key !== "projectId") {
+                    oldTodo[key] = updatedTodo[key];
                 }
             }
             project.todos[index] = oldTodo

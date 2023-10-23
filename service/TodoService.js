@@ -5,6 +5,7 @@ class TodoService{
 
     async addTodo(user, todo){
         try {
+            const user = await User.findById(userId)
             user.todos.push({...todo, done:false})
             await user.save()
         }catch (e){
@@ -31,13 +32,15 @@ class TodoService{
     async updateTodo(userId, newTodo){
         try {
             const user = await User.findById(userId);
-            const oldTodo = user.todos.filter(obj => obj.id === newTodo.id);
-            if (oldTodo) throw new Error('Todo not found')
+            const index = user.todos.findIndex(obj => obj.id === newTodo.id);
+            if (index === -1) throw new Error('Todo not found')
+            const oldTodo = user.todos[index]
             for (let key in newTodo) {
                 if (newTodo[key] !== null && key !== "id") {
                     oldTodo[key] = newTodo[key];
                 }
             }
+            user.todos[index] = oldTodo
             await user.save()
         }catch (e) {
            throw new Error(e.message)

@@ -1,18 +1,10 @@
-import User from "../models/User.js"
-
 import TodoService from '../service/TodoService.js'
-import ProjectService from "../service/ProjectService.js";
-import Project from "../models/Project.js";
 class todoController{
     async createTodo(req, res){
         try {
             const userId = req.query.user_id
             const todo = req.body
-            const user = await User.findById(userId)
-            if (todo.projectId === user.inboxID)
-                await TodoService.addTodo(user, todo)
-            else
-                await ProjectService.addTodo(todo.projectId, todo)
+            await TodoService.addTodo(userId, todo)
         }catch (e){
             console.error(e)
             res.status(500).end()
@@ -33,9 +25,7 @@ class todoController{
         try {
             const userId = req.query.user_id;
             const newTodo = req.body;
-            const user = await User.findById(userId);
-            if (newTodo.projectId === user.inboxID) await TodoService.updateTodo(userId, newTodo)
-            else await ProjectService.updateTodo()
+            await TodoService.updateTodo(userId, newTodo)
             res.status(200).end();
         } catch (e) {
             console.error(e);

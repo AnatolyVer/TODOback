@@ -33,19 +33,19 @@ class WebSocketManager {
 
         socket.on(EVENT_MESSAGE, async message => {
             const {type, payload} = JSON.parse(message)
-            const projectId = payload.projectId
+            const {projectId, id, data} = payload
             try {
                 switch (type) {
                     case ADD_TODO:
-                        await ProjectService.addTodo(projectId, payload)
+                        const newTodo = {projectId, id, ...data}
+                        await ProjectService.addTodo(projectId, newTodo)
                         break;
                     case DELETE_TODO:
-                        await ProjectService.deleteTodo(projectId, payload)
+                        await ProjectService.deleteTodo(projectId, ...data)
                         break;
                     case UPDATE_TODO:
-                        const {id, data} = payload
-                        const newTodo = {projectId, id, ...data}
-                        await ProjectService.updateTodo(projectId, newTodo)
+                        const updatedTodo = {projectId, id, ...data}
+                        await ProjectService.updateTodo(updatedTodo)
                         break;
                     case DELETE_PROJECT:
                         const userId = this.getClientIDBySocket(socket)
