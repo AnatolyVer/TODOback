@@ -41,7 +41,7 @@ class WebSocketManager {
                         await ProjectService.addTodo(newTodo)
                         break;
                     case DELETE_TODO:
-                        await ProjectService.deleteTodo(projectId, ...data)
+                        await ProjectService.deleteTodo(projectId, id)
                         break;
                     case UPDATE_TODO:
                         const updatedTodo = {projectId, id, ...data}
