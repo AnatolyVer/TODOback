@@ -3,10 +3,10 @@ import Project from "../models/Project.js";
 
 class TodoService{
 
-    async addTodo(user, todo){
+    async addTodo(userId, newTodo){
         try {
             const user = await User.findById(userId)
-            user.todos.push({...todo, done:false})
+            user.todos.push({...newTodo})
             await user.save()
         }catch (e){
             throw new Error(e.message)
