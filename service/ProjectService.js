@@ -21,7 +21,7 @@ class ProjectService{
     async addTodo(newTodo){
         try {
             const project = await Project.findById(newTodo.projectId)
-            project.todos.push({...newTodo, done:false})
+            project.todos.push(...newTodo)
             await project.save()
         }catch (e) {
             throw new Error(e.message)
