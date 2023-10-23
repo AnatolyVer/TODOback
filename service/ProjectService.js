@@ -32,7 +32,7 @@ class ProjectService{
     async deleteTodo(projectId, todoId){
         try {
             const project = await Project.findById(projectId)
-            project.todos = project.todos.filter(obj => obj.id !== todoId);
+            project.todos = [...project.todos.filter(obj => obj.id !== todoId)]
             await project.save()
         }catch (e) {
             console.error(e)
