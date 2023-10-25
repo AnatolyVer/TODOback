@@ -17,12 +17,14 @@ const app = express()
 const server = http.createServer(app);
 const PORT = process.env.PORT || 3000
 
-mongoose.set('strictQuery', true)
 dotenv.config()
-mongoose
-    .connect(process.env.MONGO_URL)
-    .then(() => console.log("Successfully connected to DB")
-    ).catch(() => console.log("Failed connection to DB"))
+if (process.env.NODE_ENV !== "test"){
+    mongoose.set('strictQuery', true)
+    mongoose
+        .connect(process.env.MONGO_URL)
+        .then(() => console.log("Successfully connected to DB")
+        ).catch(() => console.log("Failed connection to DB"))
+}
 
 app.use(cookieParser('key'))
 app.use(express.json())
@@ -48,3 +50,4 @@ server.listen(PORT, (err) => {
     else console.log(`Server started at port ${PORT}`)
 })
 
+export default server
