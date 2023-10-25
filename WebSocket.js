@@ -26,6 +26,7 @@ class WebSocketManager {
 
         const projects = await ProjectService.getUserProjectsID(userID)
         projects.forEach(project => this.addClientToRoom(userID, project))
+
         this.clients[userID] = {
             socket,
             rooms:projects
@@ -114,7 +115,5 @@ class WebSocketManager {
         }
     }
 }
-
-
 
 export default WebSocketManager;
