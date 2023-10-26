@@ -16,12 +16,13 @@ import http from "http";
 const app = express()
 const server = http.createServer(app);
 const PORT = process.env.PORT || 3000
+const MONGO_URL = process.env.NODE_ENV === "development" ? process.env.MONGO_URL_DEV : process.env.MONGO_URL_PROD
 
 dotenv.config()
 if (process.env.NODE_ENV !== "test"){
     mongoose.set('strictQuery', true)
     mongoose
-        .connect(process.env.MONGO_URL)
+        .connect(MONGO_URL)
         .then(() => console.log("Successfully connected to DB")
         ).catch(() => console.log("Failed connection to DB"))
 }

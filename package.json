@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node index.js",
     "test": "set NODE_ENV=test&& mocha tests/*.js --timeout 10000",
-    "dev": "set NODE_ENV=developent&& nodemon index.js"
+    "dev": "set NODE_ENV=development&& nodemon index.js"
   },
   "keywords": [],
   "author": "",

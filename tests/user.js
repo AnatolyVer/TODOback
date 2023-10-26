@@ -1,4 +1,3 @@
-process.env.NODE_ENV = 'test';
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import chai from 'chai';
@@ -38,16 +37,16 @@ describe('User API', () => {
         chai.request(server)
             .post('/user/sign_up')
             .send(user)
-            .end((err, res) => {
+            .end(async (err, res) => {
                 expect(err).to.be.null;
                 expect(res).to.have.status(200);
 
-                User.findOne({ login: 'tolik.vereshchak88@gmail.com' }, (err, foundUser) => {
-                    expect(err).to.be.null;
-                    expect(foundUser).to.not.be.null;
-                    expect(foundUser.login).to.equal('tolik.vereshchak88@gmail.com');
-                    done();
-                });
+
+                const user = await User.findOne({login: 'tolik.vereshchak88@gmail.com'})
+                expect(err).to.be.null;
+                expect(user).to.not.be.null;
+                expect(user.login).to.equal('tolik.vereshchak88@gmail.com');
+                done();
             });
     });
 });
