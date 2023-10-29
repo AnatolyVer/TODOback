@@ -20,7 +20,7 @@ const PORT = process.env.PORT || 3000
 mongoose.set('strictQuery', true)
 dotenv.config()
 mongoose
-    .connect(process.env.MONGO_URL)
+    .connect(process.env.MONGO_URL_DEV)
     .then(() => console.log("Successfully connected to DB")
     ).catch(() => console.log("Failed connection to DB"))
 
